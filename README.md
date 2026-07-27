@@ -1,4 +1,4 @@
-# Claude Chat v16 使用说明
+# Claude Chat v17（开源版）使用说明
 
 ## 这是什么
 
@@ -6,11 +6,13 @@
 
 请求直接从你的浏览器发到 AI 服务商，**不经过任何第三方服务器**。
 
+> 本版本为开源发布版：已移除原作者本机的桥接地址等个人配置，所有连接地址均为通用默认值，每个使用者需要按自己的环境自行填写。
+
 ---
 
 ## 快速开始
 
-1. 双击打开 `claude-chat-v16_2_2.html`
+1. 双击打开 `claude-chat-v17-opensource.html`
 2. 点击右上角 **设置（⚙）**
 3. 在 **API** 标签页填入你的 API Key
 4. 选好模型，保存，开始对话
@@ -28,7 +30,7 @@
 | API Key | 你的 Anthropic 或 OpenAI 兼容 API Key |
 | Base URL | 默认 `https://api.anthropic.com`，使用中转或其他服务时修改 |
 | API 类型 | Anthropic（Claude）或 OpenAI 兼容 |
-| 模型 | 填写模型名称，或点"获取列表"自动拉取 |
+| 模型 | 填写模型名称，或点“获取列表”自动拉取 |
 | 最大 Token | 单次回复最大长度 |
 | Temperature / Top P | 控制回复随机性，默认值适合大多数场景 |
 | 上下文条数 | 每次发送携带的历史消息数，0 = 不限 |
@@ -46,7 +48,7 @@
 左侧边栏可新建、切换、重命名对话窗口，各窗口历史独立保存。
 
 ### 持久记忆
-AI 可以在对话中主动更新"记忆"，下次对话时自动带入。记忆内容可在设置中查看和手动编辑。顶栏显示"🧠 记忆已启用"时表示有记忆内容生效。
+AI 可以在对话中主动更新“记忆”，下次对话时自动带入。记忆内容可在设置中查看和手动编辑。顶栏显示“🧠 记忆已启用”时表示有记忆内容生效。
 
 ### 图片输入
 可粘贴图片（Ctrl+V）或点击附件按钮上传，发送给支持视觉的模型。
@@ -58,9 +60,18 @@ AI 可以在对话中主动更新"记忆"，下次对话时自动带入。记忆
 ### 导出聊天记录
 点击顶栏右侧的 **↑ 导出** 按钮，可将当前对话窗口的聊天记录导出为：
 - **Markdown (.md)**：格式整洁，适合阅读和分享
+- **纯文本 (.txt)**：任何地方都能打开
 - **JSON (.json)**：包含完整结构数据，适合程序处理
+- **复制到剪贴板**：直接粘贴到备忘录等应用
 
-导出内容仅包含文字消息，图片不随历史持久化。
+**新增：选择消息导出**
+导出面板最下方新增“选择消息导出”入口。点击后进入选择模式：
+- 每条聊天记录左上角出现勾选框，点击气泡任意位置或勾选框均可勾选/取消
+- 底部工具栏可“全选/取消全选”，显示已选条数
+- 点击“导出”后可选择 Markdown / 纯文本 / JSON / 复制到剪贴板，四种格式都只包含勾选中的那几条消息，并按原始时间顺序排列
+- 导出完成后自动退出选择模式
+
+导出内容仅包含文字消息，图片不随历史持久化，也不参与选择导出。
 
 ### 调试工具
 点击顶栏右侧的 **🔍 调试** 按钮可开启调试模式。开启后，下次发送含图片的消息时会弹窗显示实际发送给 API 的内容（图片数量、base64 片段、文字内容），方便排查图片识别异常或请求格式问题。再次点击关闭。
@@ -94,7 +105,7 @@ python toy_bridge.py
 
 ### 连接玩具
 
-设置面板 → 玩具标签页 → 填入桥接地址 → 点击连接。
+设置面板 → 玩具标签页 → 桥接地址默认为 `ws://127.0.0.1:8765`（本机运行桥接脚本时无需修改；如果桥接脚本运行在局域网内的其他设备上，改成该设备的局域网 IP，例如 `ws://192.168.x.x:8765`）→ 点击连接。
 
 ### 手动控制
 
@@ -108,7 +119,7 @@ python toy_bridge.py
 
 ### AI 控制模式
 
-开启"AI 控制"后，AI 回复时会自动附带玩具指令。
+开启“AI 控制”后，AI 回复时会自动附带玩具指令。
 
 - **剧本模式**：AI 回复结束后播放一段预设动作序列（5-15 步，总时长 ≤30 秒）
 - **实时模式**：AI 回复过程中逐步插入控制指令，随内容实时响应
@@ -132,7 +143,7 @@ python toy_bridge.py
 
 适合有虚拟主机、对象存储或静态托管服务的情况。
 
-将 `claude-chat-v16_2_2.html` 上传到以下任一平台即可通过链接访问：
+将 `claude-chat-v17-opensource.html` 上传到以下任一平台即可通过链接访问：
 
 - **Cloudflare Pages**：拖拽上传，免费，自带 CDN
 - **Vercel / Netlify**：拖拽或 Git 部署，免费
@@ -145,13 +156,13 @@ python toy_bridge.py
 
 ```bash
 # 将 HTML 文件上传到服务器
-scp claude-chat-v16_2_2.html user@your-server:/var/www/html/
+scp claude-chat-v17-opensource.html user@your-server:/var/www/html/
 
 # 安装 Nginx（如未安装）
 sudo apt install nginx
 
 # Nginx 默认会托管 /var/www/html/ 下的文件
-# 访问 http://your-server-ip/claude-chat-v16_2_2.html 即可
+# 访问 http://your-server-ip/claude-chat-v17-opensource.html 即可
 ```
 
 如需绑定域名并启用 HTTPS，可用 Certbot 申请免费证书：
@@ -177,7 +188,7 @@ npm install -g http-server pm2
 
 **第二步：上传文件**
 
-用 Termius、FileZilla 等 SFTP 工具将 `claude-chat-v16_2_2.html` 拖入服务器目录，例如 `/var/www/chat/`。
+用 Termius、FileZilla 等 SFTP 工具将 `claude-chat-v17-opensource.html` 拖入服务器目录，例如 `/var/www/chat/`。
 
 **第三步：用 PM2 启动并保活**
 
@@ -193,7 +204,7 @@ pm2 save
 pm2 startup
 ```
 
-启动后访问 `http://你的服务器IP:8080/claude-chat-v16_2_2.html` 即可。
+启动后访问 `http://你的服务器IP:8080/claude-chat-v17-opensource.html` 即可。
 
 **常用 PM2 命令**
 
@@ -234,7 +245,7 @@ sudo certbot --nginx -d yourdomain.com
 python -m http.server 8080
 ```
 
-然后同一 WiFi 下的设备访问 `http://你的电脑IP:8080/claude-chat-v16_2_2.html` 即可。
+然后同一 WiFi 下的设备访问 `http://你的电脑IP:8080/claude-chat-v17-opensource.html` 即可。
 
 ### 注意事项
 
@@ -243,6 +254,14 @@ python -m http.server 8080
 - 建议部署后启用 HTTPS，避免浏览器因安全限制阻止 API 请求
 
 ---
+
+## 开源说明
+
+本仓库/文件不包含任何原作者的个人配置（API Key、服务器地址、局域网 IP 等）——所有可配置项均为空值或通用默认值。Fork 或二次分发时，请同样注意：
+
+- 不要把自己的 API Key、Base URL 提交进代码或截图分享
+- 玩具桥接地址、`DEVICE_ADDRESS` 等如果修改为你本机的局域网 IP，也不建议连同代码一起公开分发
+- localStorage 中保存的对话历史、记忆内容仅存在使用者本机浏览器中，不会随文件分发泄露
 
 ## 其他注意事项
 

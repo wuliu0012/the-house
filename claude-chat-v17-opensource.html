@@ -99,6 +99,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .msg-edit-actions button.primary{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
 .msg.user .bubble{cursor:pointer}
 
+/* Selection mode (choose messages to export) */
+.msg{position:relative}
+.msg-check{position:absolute;top:-2px;left:2px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface2);display:none;align-items:center;justify-content:center;font-size:12px;line-height:1;color:#fff;cursor:pointer;z-index:2}
+#messages.select-mode .msg-check{display:flex}
+#messages.select-mode .msg{padding-left:28px}
+.msg-check.checked{background:var(--accent);border-color:var(--accent)}
+#select-bar{display:none;align-items:center;justify-content:space-between;gap:8px;padding:9px 14px calc(var(--safe-bottom)+9px);background:var(--surface);border-top:.5px solid var(--border);flex-shrink:0}
+#select-bar.on{display:flex}
+#select-bar .sb-left{display:flex;align-items:center;gap:10px}
+#select-bar .sb-count{font-size:12px;color:var(--text2)}
+#select-bar button{font-size:13px;padding:7px 13px;border-radius:16px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;font-family:inherit;white-space:nowrap}
+#select-bar button.primary{background:var(--accent-bg);color:var(--accent);border-color:var(--accent)}
+#select-bar button:disabled{opacity:.4;cursor:default}
+
 /* Token info */
 .token-info{font-size:10px;color:var(--text3);padding:2px 4px;text-align:right}
 .msg.user .token-info{text-align:right}
@@ -262,6 +276,17 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <div id="empty-state"><div class="eicon">◎</div><p>开始新的对话</p></div>
   </div>
 
+  <div id="select-bar">
+    <div class="sb-left">
+      <button id="sb-cancel">取消</button>
+      <button id="sb-all">全选</button>
+    </div>
+    <div class="sb-left">
+      <span class="sb-count" id="sb-count">已选 0 条</span>
+      <button class="primary" id="sb-export" disabled>导出</button>
+    </div>
+  </div>
+
   <div id="input-area">
     <div id="attach-row"></div>
     <div id="input-row">
@@ -329,8 +354,8 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <div class="tpane" id="tab-params">
       <div class="ss"><div class="srow"><div class="sl">Temperature</div><span class="sval" id="temp-val">1.00</span></div><input type="range" min="0" max="2" step="0.05" value="1" id="s-temp" style="width:100%;margin-top:8px"></div>
       <div class="ss"><div class="srow"><div class="sl">Top P</div><span class="sval" id="topp-val">1.00</span></div><input type="range" min="0" max="1" step="0.05" value="1" id="s-topp" style="width:100%;margin-top:8px"></div>
-      <div class="ss"><div class="srow"><div class="sl">上下文轮数</div><span class="sval" id="ctx-val">不限</span></div><input type="range" min="0" max="40" step="2" value="0" id="s-ctx" style="width:100%;margin-top:8px"><div class="slx">0 = 不限</div></div>
-      <div class="ss"><div class="srow"><div class="sl">最大输出 Token</div><span class="sval" id="maxtok-val">4096</span></div><input type="range" min="256" max="32000" step="256" value="4096" id="s-maxtok" style="width:100%;margin-top:8px"></div>
+      <div class="ss"><div class="srow"><div class="sl">上下文轮数</div><span class="sval" id="ctx-val">不限</span></div><input type="range" min="0" max="40" step="2" value="0" id="s-ctx" style="width:100%;margin-top:8px"><div style="display:flex;gap:8px;margin-top:8px"><input class="si" type="number" id="s-ctx-num" min="0" step="1" placeholder="自定义轮数" style="flex:1;padding:9px 13px"><button type="button" class="mcp-add" id="s-ctx-unlim" style="width:auto;padding:9px 16px;white-space:nowrap;margin-top:0">不限</button></div><div class="slx">0 = 不限，也可直接输入数值（不受滑块 40 上限限制）</div></div>
+      <div class="ss"><div class="srow"><div class="sl">最大输出 Token</div><span class="sval" id="maxtok-val">4096</span></div><input type="range" min="0" max="32000" step="256" value="4096" id="s-maxtok" style="width:100%;margin-top:8px"><div style="display:flex;gap:8px;margin-top:8px"><input class="si" type="number" id="s-maxtok-num" min="0" step="1" placeholder="自定义 token 数" style="flex:1;padding:9px 13px"><button type="button" class="mcp-add" id="s-maxtok-unlim" style="width:auto;padding:9px 16px;white-space:nowrap;margin-top:0">不限</button></div><div class="slx">0 = 不限，也可直接输入数值（不受滑块 32000 上限限制）</div></div>
       <div class="ss"><div class="srow"><div class="sl">字体大小</div><span class="sval" id="fontsize-val">15px</span></div><input type="range" min="12" max="22" step="1" value="15" id="s-fontsize" style="width:100%;margin-top:8px"><div class="slx">调整聊天消息字体大小</div></div>
     </div>
     <!-- Avatar tab -->
@@ -426,6 +451,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
       </div>
     </div>
     <button class="pbtn pri" id="save-settings-btn">保存</button>
+    <button class="pbtn" id="storage-info-btn" style="margin-top:8px">查看存储占用 / 清理旧对话</button>
     <button class="pbtn dan" id="clear-btn">清除所有数据</button>
   </div>
 </div>
@@ -454,6 +480,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <div class="exp-item" id="exp-txt"><div class="exp-icon">TXT</div><div><div class="exp-t">纯文本</div><div class="exp-s">任何地方都能打开</div></div></div>
     <div class="exp-item" id="exp-json"><div class="exp-icon">{}</div><div><div class="exp-t">JSON 数据</div><div class="exp-s">保留完整结构</div></div></div>
     <div class="exp-item" id="exp-copy"><div class="exp-icon">⎘</div><div><div class="exp-t">复制到剪贴板</div><div class="exp-s">直接粘贴到备忘录</div></div></div>
+    <div class="exp-item" id="exp-select"><div class="exp-icon">☑</div><div><div class="exp-t">选择消息导出</div><div class="exp-s">只导出勾选的几条聊天记录</div></div></div>
     <button class="pbtn sec" id="close-exp-btn">取消</button>
   </div>
 </div>
@@ -470,6 +497,11 @@ let cfg={
   model:'claude-opus-4-6',mcpUrls:[],sysPrompt:'',
   temperature:1.0,topP:1.0,maxTokens:4096,ctxLimit:0,fontSize:15
 };
+let maxTokenCache={}; // 记录每个模型探测到的真实最大输出限制（用于 maxTokens=0 "不限" 模式）
+function getMaxTokens(){
+  if(cfg.maxTokens===0)return maxTokenCache[cfg.model]||64000;
+  return cfg.maxTokens;
+}
 let memory='';
 let windows=[],activeWinId=null;
 let avatarCfg={
@@ -490,19 +522,28 @@ function loadAll(){
   if(!activeWinId||!windows.find(w=>w.id===activeWinId))activeWinId=windows[0].id;
 }
 function saveAll(){
-  localStorage.setItem(CFG_KEY,JSON.stringify(cfg));
-  // 保存时剥离图片 base64（太大会超出 localStorage 5MB 限制）
-  // 内存中的 windows 保留完整图片，刷新后图片历史不显示但不影响发送
-  const winsToSave=windows.map(w=>({...w,history:w.history.map(m=>{
-    if(Array.isArray(m.content)){
-      const stripped=m.content.filter(b=>b.type!=='image');
-      if(stripped.length===0&&m._display)return{...m,content:m._display,_display:undefined};
-      if(stripped.length===0)return null;
-      return{...m,content:stripped};
-    }
-    return m;
-  }).filter(Boolean)}));
-  localStorage.setItem(WINS_KEY,JSON.stringify({windows:winsToSave,active:activeWinId}));
+  try{
+    localStorage.setItem(CFG_KEY,JSON.stringify(cfg));
+    // 保存时剥离图片 base64（太大会超出 localStorage 5MB 限制）
+    // 内存中的 windows 保留完整图片，刷新后图片历史不显示但不影响发送
+    const winsToSave=windows.map(w=>({...w,history:w.history.map(m=>{
+      if(Array.isArray(m.content)){
+        const stripped=m.content.filter(b=>b.type!=='image');
+        if(stripped.length===0&&m._display)return{...m,content:m._display,_display:undefined};
+        if(stripped.length===0)return null;
+        return{...m,content:stripped};
+      }
+      return m;
+    }).filter(Boolean)}));
+    localStorage.setItem(WINS_KEY,JSON.stringify({windows:winsToSave,active:activeWinId}));
+    return true;
+  }catch(e){
+    // 本地存储空间已满（浏览器 localStorage 一般只有 5~10MB）。
+    // 这不是 AI/API 的错误，绝不能冒充成对话报错——只做提示，不打断当前对话。
+    console.warn('saveAll 写入 localStorage 失败（可能是存储空间已满）:',e);
+    showMemToast('⚠️ 本地存储空间已满，最新消息可能未保存，建议清理旧窗口/记录');
+    return false;
+  }
 }
 function saveMem(){localStorage.setItem(MEM_KEY,memory);}
 function saveAvatarCfg(){localStorage.setItem(AVT_KEY,JSON.stringify(avatarCfg));}
@@ -809,6 +850,7 @@ function scrollBot(){messagesEl.scrollTop=messagesEl.scrollHeight;}
 function addMsg(role,content,isThinking,histEntry){
   const es=document.getElementById('empty-state');if(es)es.remove();
   const wrap=document.createElement('div');wrap.className='msg '+role;
+  if(histEntry&&!isThinking&&typeof content==='string'){wrap._histEntry=histEntry;addSelectCheckbox(wrap,histEntry);}
   const av=makeAvatar(role);
   const col=document.createElement('div');col.className='msg-col';
 
@@ -890,6 +932,7 @@ function addToolBlockToChat(name,inputObj,resultText){
 function addUserMsg(displayText,images,histEntry){
   const es=document.getElementById('empty-state');if(es)es.remove();
   const wrap=document.createElement('div');wrap.className='msg user';
+  if(histEntry&&typeof histEntry.content==='string'){wrap._histEntry=histEntry;addSelectCheckbox(wrap,histEntry);}
   const av=makeAvatar('user');
   const col=document.createElement('div');col.className='msg-col';
 
@@ -1117,14 +1160,24 @@ async function sendToApi(){
       });
       const oMsgs=[];if(sys)oMsgs.push({role:'system',content:sys});oMsgs.push(...convertMsgs);
       const doOAIRequest=async(msgs)=>{
-        const reqBody={model:cfg.model,max_tokens:cfg.maxTokens,temperature:cfg.temperature,top_p:cfg.topP,messages:msgs};
+        const reqBody={model:cfg.model,max_tokens:getMaxTokens(),temperature:cfg.temperature,top_p:cfg.topP,messages:msgs};
         if(oTools)reqBody.tools=oTools;
         const r=await fetch(`${base}/v1/chat/completions`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},body:JSON.stringify(reqBody),signal});
-        if(!r.ok){const err=await r.json();throw new Error(err.error?.message||`请求失败 (${r.status})`);}
+        if(!r.ok){
+          const err=await r.json();const msg=err.error?.message||`请求失败 (${r.status})`;
+          const m=cfg.maxTokens===0&&/max_tokens[":\s]*\D*(\d+)\D*maximum/i.exec(msg);
+          if(m){
+            maxTokenCache[cfg.model]=parseInt(m[1]);reqBody.max_tokens=maxTokenCache[cfg.model];
+            const r2=await fetch(`${base}/v1/chat/completions`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},body:JSON.stringify(reqBody),signal});
+            if(!r2.ok){const err2=await r2.json();throw new Error(err2.error?.message||`请求失败 (${r2.status})`);}
+            return await r2.json();
+          }
+          throw new Error(msg);
+        }
         return await r.json();
       };
       let curOMsgs=[...oMsgs];let loopGuard=0;
-      while(loopGuard<10){
+      while(loopGuard<500){
         loopGuard++;
         const d=await doOAIRequest(curOMsgs);lastUsage=d.usage?{input_tokens:d.usage.prompt_tokens,output_tokens:d.usage.completion_tokens}:null;
         const choice=d.choices?.[0];const toolCalls=choice?.message?.tool_calls||[];
@@ -1144,16 +1197,26 @@ async function sendToApi(){
     }else{
       // Anthropic with tool loop — fix: use input_schema (snake_case) from MCP
       const tools=mcpTools.map(t=>({name:t.name,description:t.description||'',input_schema:t.input_schema||t.inputSchema||{type:'object',properties:{}}}));
-      const body={model:cfg.model,max_tokens:cfg.maxTokens,temperature:cfg.temperature,top_p:cfg.topP,messages};
+      const body={model:cfg.model,max_tokens:getMaxTokens(),temperature:cfg.temperature,top_p:cfg.topP,messages};
       if(sys)body.system=sys;if(tools.length>0)body.tools=tools;
       const doRequest=async(msgs)=>{
         const r=await fetch(`${base}/v1/messages`,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({...body,messages:msgs}),signal});
-        if(!r.ok){const err=await r.json();throw new Error(err.error?.message||`请求失败 (${r.status})`);}
+        if(!r.ok){
+          const err=await r.json();const msg=err.error?.message||`请求失败 (${r.status})`;
+          const m=cfg.maxTokens===0&&/max_tokens[":\s]*\D*(\d+)\D*maximum/i.exec(msg);
+          if(m){
+            maxTokenCache[cfg.model]=parseInt(m[1]);body.max_tokens=maxTokenCache[cfg.model];
+            const r2=await fetch(`${base}/v1/messages`,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({...body,messages:msgs}),signal});
+            if(!r2.ok){const err2=await r2.json();throw new Error(err2.error?.message||`请求失败 (${r2.status})`);}
+            return await r2.json();
+          }
+          throw new Error(msg);
+        }
         return await r.json();
       };
       let data=await doRequest(messages);let curMsgs=[...messages];lastUsage=data.usage||null;
       let loopGuard=0;
-      while(data.stop_reason==='tool_use'&&loopGuard<10){
+      while(data.stop_reason==='tool_use'&&loopGuard<500){
         loopGuard++;
         const toolUses=data.content.filter(b=>b.type==='tool_use');
         const toolResults=[];
@@ -1307,13 +1370,15 @@ document.getElementById('settings-btn').onclick=()=>{
   document.getElementById('s-sysprompt').value=cfg.sysPrompt;
   document.getElementById('s-temp').value=cfg.temperature;
   document.getElementById('s-topp').value=cfg.topP;
-  document.getElementById('s-ctx').value=cfg.ctxLimit;
-  document.getElementById('s-maxtok').value=cfg.maxTokens;
+  document.getElementById('s-ctx').value=Math.min(cfg.ctxLimit,40);
+  document.getElementById('s-ctx-num').value=cfg.ctxLimit;
+  document.getElementById('s-maxtok').value=Math.min(cfg.maxTokens,32000);
+  document.getElementById('s-maxtok-num').value=cfg.maxTokens;
   document.getElementById('s-fontsize').value=cfg.fontSize||15;
   document.getElementById('temp-val').textContent=Number(cfg.temperature).toFixed(2);
   document.getElementById('topp-val').textContent=Number(cfg.topP).toFixed(2);
   document.getElementById('ctx-val').textContent=cfg.ctxLimit===0?'不限':cfg.ctxLimit;
-  document.getElementById('maxtok-val').textContent=cfg.maxTokens;
+  document.getElementById('maxtok-val').textContent=cfg.maxTokens===0?'不限':cfg.maxTokens;
   document.getElementById('fontsize-val').textContent=(cfg.fontSize||15)+'px';
   document.getElementById('s-ainame').value=avatarCfg.aiName||'Claude';
   document.getElementById('s-username').value=avatarCfg.userName||'我';
@@ -1324,8 +1389,12 @@ document.getElementById('settings-btn').onclick=()=>{
 settingsOv.addEventListener('click',e=>{if(e.target===settingsOv)settingsOv.classList.remove('open');});
 document.getElementById('s-temp').oninput=e=>document.getElementById('temp-val').textContent=Number(e.target.value).toFixed(2);
 document.getElementById('s-topp').oninput=e=>document.getElementById('topp-val').textContent=Number(e.target.value).toFixed(2);
-document.getElementById('s-ctx').oninput=e=>{const v=parseInt(e.target.value);document.getElementById('ctx-val').textContent=v===0?'不限':v;};
-document.getElementById('s-maxtok').oninput=e=>document.getElementById('maxtok-val').textContent=e.target.value;
+document.getElementById('s-ctx').oninput=e=>{const v=parseInt(e.target.value);document.getElementById('s-ctx-num').value=v;document.getElementById('ctx-val').textContent=v===0?'不限':v;};
+document.getElementById('s-ctx-num').oninput=e=>{let v=parseInt(e.target.value);if(isNaN(v)||v<0)v=0;if(v<=40)document.getElementById('s-ctx').value=v;document.getElementById('ctx-val').textContent=v===0?'不限':v;};
+document.getElementById('s-ctx-unlim').onclick=()=>{document.getElementById('s-ctx').value=0;document.getElementById('s-ctx-num').value=0;document.getElementById('ctx-val').textContent='不限';};
+document.getElementById('s-maxtok').oninput=e=>{const v=parseInt(e.target.value);document.getElementById('s-maxtok-num').value=v;document.getElementById('maxtok-val').textContent=v===0?'不限':v;};
+document.getElementById('s-maxtok-num').oninput=e=>{let v=parseInt(e.target.value);if(isNaN(v)||v<0)v=0;if(v<=32000)document.getElementById('s-maxtok').value=v;document.getElementById('maxtok-val').textContent=v===0?'不限':v;};
+document.getElementById('s-maxtok-unlim').onclick=()=>{document.getElementById('s-maxtok').value=0;document.getElementById('s-maxtok-num').value=0;document.getElementById('maxtok-val').textContent='不限';};
 document.getElementById('s-fontsize').oninput=e=>{document.getElementById('fontsize-val').textContent=e.target.value+'px';document.documentElement.style.setProperty('--font-size',e.target.value+'px');};
 
 document.getElementById('save-settings-btn').onclick=()=>{
@@ -1337,8 +1406,8 @@ document.getElementById('save-settings-btn').onclick=()=>{
   const mm=document.getElementById('s-model-manual').value.trim();if(mm)cfg.model=mm;
   cfg.temperature=parseFloat(document.getElementById('s-temp').value);
   cfg.topP=parseFloat(document.getElementById('s-topp').value);
-  cfg.ctxLimit=parseInt(document.getElementById('s-ctx').value);
-  cfg.maxTokens=parseInt(document.getElementById('s-maxtok').value);
+  cfg.ctxLimit=Math.max(0,parseInt(document.getElementById('s-ctx-num').value)||0);
+  cfg.maxTokens=Math.max(0,parseInt(document.getElementById('s-maxtok-num').value)||0);
   cfg.fontSize=parseInt(document.getElementById('s-fontsize').value)||15;
   document.documentElement.style.setProperty('--font-size',cfg.fontSize+'px');
   avatarCfg.aiName=document.getElementById('s-ainame').value.trim()||'Claude';
@@ -1349,6 +1418,26 @@ document.getElementById('save-settings-btn').onclick=()=>{
 };
 document.getElementById('clear-btn').onclick=()=>{
   if(confirm('确定清除所有数据？')){localStorage.removeItem(CFG_KEY);localStorage.removeItem(MEM_KEY);localStorage.removeItem(WINS_KEY);localStorage.removeItem(AVT_KEY);location.reload();}
+};
+document.getElementById('storage-info-btn').onclick=()=>{
+  // 估算 localStorage 各项占用（单位 KB）
+  let total=0;const parts=[];
+  [[CFG_KEY,'配置'],[MEM_KEY,'记忆'],[WINS_KEY,'聊天记录'],[AVT_KEY,'头像']].forEach(([k,label])=>{
+    const v=localStorage.getItem(k)||'';const kb=(v.length/1024).toFixed(1);total+=parseFloat(kb);parts.push(`${label}: ${kb} KB`);
+  });
+  // 按窗口统计大小，找出最占空间的窗口
+  const winsSorted=windows.map(w=>({w,kb:(JSON.stringify(w.history).length/1024)})).sort((a,b)=>b.kb-a.kb);
+  const winInfo=winsSorted.slice(0,5).map(x=>`  · ${x.w.name}：${x.kb.toFixed(1)} KB（${x.w.history.length}条消息）`).join('\n');
+  const msg=`当前 localStorage 占用约 ${total.toFixed(1)} KB（浏览器一般上限 5000~10000 KB）。\n\n${parts.join('\n')}\n\n占用最大的窗口：\n${winInfo}\n\n是否删除占用最大的那个窗口以释放空间？（该窗口的聊天记录会被永久删除，无法恢复）`;
+  if(winsSorted.length>1&&confirm(msg)){
+    const target=winsSorted[0].w;
+    if(windows.length===1){alert('至少保留一个窗口，无法删除。');return;}
+    windows=windows.filter(x=>x.id!==target.id);
+    if(activeWinId===target.id)activeWinId=windows[0].id;
+    const ok=saveAll();
+    renderWinList();switchToWin(activeWinId);
+    alert(ok?'已删除，空间已释放。':'删除后仍然写入失败，可能需要多删几个窗口，或点击"清除所有数据"重置。');
+  }
 };
 
 // ══════════════════════════════════════
@@ -1364,16 +1453,95 @@ document.getElementById('close-mem-btn').onclick=()=>memOv.classList.remove('ope
 //  EXPORT
 // ══════════════════════════════════════
 const expOv=document.getElementById('export-overlay');
-document.getElementById('export-btn').onclick=()=>{const w=activeWin();if(!w||!w.history.filter(m=>typeof m.content==='string').length){alert('还没有聊天记录');return;}expOv.classList.add('open');};
+document.getElementById('export-btn').onclick=()=>{const w=activeWin();if(!w||!w.history.filter(m=>typeof m.content==='string').length){alert('还没有聊天记录');return;}pendingExportMsgs=null;expOv.classList.add('open');};
 expOv.addEventListener('click',e=>{if(e.target===expOv)expOv.classList.remove('open');});
 document.getElementById('close-exp-btn').onclick=()=>expOv.classList.remove('open');
 function dl(content,name,mime){const b=new Blob([content],{type:mime}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
 function ts(){return new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');}
 function getTextMsgs(){const w=activeWin();return w?w.history.filter(m=>typeof m.content==='string'):[]; }
-document.getElementById('exp-md').onclick=()=>{const msgs=getTextMsgs();const w=activeWin();let md=`# ${w.name}\n\n导出：${new Date().toLocaleString('zh-CN')}\n模型：${cfg.model}\n\n---\n\n`;msgs.forEach(m=>{md+=(m.role==='user'?`**${avatarCfg.userName}：**\n\n`:`**${avatarCfg.aiName}：**\n\n`)+m.content+'\n\n---\n\n';});dl(md,`${w.name}-${ts()}.md`,'text/markdown');expOv.classList.remove('open');};
-document.getElementById('exp-txt').onclick=()=>{const msgs=getTextMsgs();const w=activeWin();let txt=`${w.name}\n${'='.repeat(40)}\n\n`;msgs.forEach(m=>{txt+=(m.role==='user'?`【${avatarCfg.userName}】\n`:`【${avatarCfg.aiName}】\n`)+m.content+'\n\n'+'-'.repeat(40)+'\n\n';});dl(txt,`${w.name}-${ts()}.txt`,'text/plain');expOv.classList.remove('open');};
-document.getElementById('exp-json').onclick=()=>{const w=activeWin();dl(JSON.stringify({name:w.name,exportedAt:new Date().toISOString(),model:cfg.model,messages:getTextMsgs()},null,2),`${w.name}-${ts()}.json`,'application/json');expOv.classList.remove('open');};
-document.getElementById('exp-copy').onclick=()=>{let txt='';getTextMsgs().forEach(m=>{txt+=(m.role==='user'?`【${avatarCfg.userName}】\n`:`【${avatarCfg.aiName}】\n`)+m.content+'\n\n';});copyTextSafe(txt).then(()=>{expOv.classList.remove('open');setTimeout(()=>alert('已复制'),100);}).catch(()=>alert('复制失败，当前页面非 HTTPS 环境'));};
+// 普通导出用全部文本消息；选择导出时 pendingExportMsgs 会被设为勾选的那几条
+let pendingExportMsgs=null;
+function getExportMsgs(){return pendingExportMsgs||getTextMsgs();}
+document.getElementById('exp-md').onclick=()=>{const msgs=getExportMsgs();const w=activeWin();const suffix=pendingExportMsgs?`（节选 ${msgs.length} 条）`:'';let md=`# ${w.name}${suffix}\n\n导出：${new Date().toLocaleString('zh-CN')}\n模型：${cfg.model}\n\n---\n\n`;msgs.forEach(m=>{md+=(m.role==='user'?`**${avatarCfg.userName}：**\n\n`:`**${avatarCfg.aiName}：**\n\n`)+m.content+'\n\n---\n\n';});dl(md,`${w.name}-${ts()}.md`,'text/markdown');expOv.classList.remove('open');if(selectMode)exitSelectMode();};
+document.getElementById('exp-txt').onclick=()=>{const msgs=getExportMsgs();const w=activeWin();const suffix=pendingExportMsgs?`（节选 ${msgs.length} 条）`:'';let txt=`${w.name}${suffix}\n${'='.repeat(40)}\n\n`;msgs.forEach(m=>{txt+=(m.role==='user'?`【${avatarCfg.userName}】\n`:`【${avatarCfg.aiName}】\n`)+m.content+'\n\n'+'-'.repeat(40)+'\n\n';});dl(txt,`${w.name}-${ts()}.txt`,'text/plain');expOv.classList.remove('open');if(selectMode)exitSelectMode();};
+document.getElementById('exp-json').onclick=()=>{const w=activeWin();dl(JSON.stringify({name:w.name,exportedAt:new Date().toISOString(),model:cfg.model,selected:!!pendingExportMsgs,messages:getExportMsgs()},null,2),`${w.name}-${ts()}.json`,'application/json');expOv.classList.remove('open');if(selectMode)exitSelectMode();};
+document.getElementById('exp-copy').onclick=()=>{let txt='';getExportMsgs().forEach(m=>{txt+=(m.role==='user'?`【${avatarCfg.userName}】\n`:`【${avatarCfg.aiName}】\n`)+m.content+'\n\n';});copyTextSafe(txt).then(()=>{expOv.classList.remove('open');if(selectMode)exitSelectMode();setTimeout(()=>alert('已复制'),100);}).catch(()=>alert('复制失败，当前页面非 HTTPS 环境'));};
+
+// ── 选择导出：从导出弹窗进入“勾选消息”模式 ──
+let selectMode=false;
+let selectedEntries=new Set();
+
+function addSelectCheckbox(wrap,histEntry){
+  const chk=document.createElement('div');chk.className='msg-check';
+  function refresh(){const on=selectedEntries.has(histEntry);chk.textContent=on?'✓':'';chk.classList.toggle('checked',on);}
+  refresh();
+  chk.onclick=(e)=>{e.stopPropagation();toggleEntry(histEntry);refresh();};
+  wrap.appendChild(chk);
+  // 选择模式下点击气泡/消息任意位置也算勾选，且阻止原本的点击行为（如用户消息进入编辑）
+  wrap.addEventListener('click',(e)=>{
+    if(!selectMode)return;
+    e.stopPropagation();e.preventDefault();
+    toggleEntry(histEntry);
+    refresh();
+  },true);
+}
+
+function toggleEntry(histEntry){
+  if(selectedEntries.has(histEntry))selectedEntries.delete(histEntry);else selectedEntries.add(histEntry);
+  updateSelectBar();
+}
+
+function refreshAllChecks(){
+  document.querySelectorAll('#messages .msg').forEach(wrap=>{
+    const he=wrap._histEntry;if(!he)return;
+    const chk=wrap.querySelector('.msg-check');if(!chk)return;
+    const on=selectedEntries.has(he);
+    chk.textContent=on?'✓':'';
+    chk.classList.toggle('checked',on);
+  });
+}
+
+function enterSelectMode(){
+  selectMode=true;selectedEntries=new Set();
+  messagesEl.classList.add('select-mode');
+  document.getElementById('select-bar').classList.add('on');
+  document.getElementById('input-area').style.display='none';
+  renderWinMessages();
+  updateSelectBar();
+}
+function exitSelectMode(){
+  selectMode=false;selectedEntries=new Set();pendingExportMsgs=null;
+  messagesEl.classList.remove('select-mode');
+  document.getElementById('select-bar').classList.remove('on');
+  document.getElementById('input-area').style.display='';
+  renderWinMessages();
+}
+function updateSelectBar(){
+  const n=selectedEntries.size;
+  document.getElementById('sb-count').textContent=`已选 ${n} 条`;
+  document.getElementById('sb-export').disabled=n===0;
+  const all=getTextMsgs();
+  const allSelected=all.length>0&&all.every(m=>selectedEntries.has(m));
+  document.getElementById('sb-all').textContent=allSelected?'取消全选':'全选';
+}
+
+document.getElementById('exp-select').onclick=()=>{expOv.classList.remove('open');enterSelectMode();};
+document.getElementById('sb-cancel').onclick=()=>exitSelectMode();
+document.getElementById('sb-all').onclick=()=>{
+  const w=activeWin();if(!w)return;
+  const all=getTextMsgs();
+  const allSelected=all.length>0&&all.every(m=>selectedEntries.has(m));
+  selectedEntries=allSelected?new Set():new Set(all);
+  refreshAllChecks();
+  updateSelectBar();
+};
+document.getElementById('sb-export').onclick=()=>{
+  if(selectedEntries.size===0)return;
+  const w=activeWin();if(!w)return;
+  // 按原始消息顺序排列所选内容
+  pendingExportMsgs=w.history.filter(m=>selectedEntries.has(m));
+  expOv.classList.add('open');
+};
 
 // ══════════════════════════════════════
 //  TOY CONTROL (via local WebSocket bridge / toy_bridge.py)
