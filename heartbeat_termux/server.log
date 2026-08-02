@@ -1,0 +1,13 @@
+✅ 心跳同步服务器运行在 http://0.0.0.0:5051
+   前端「设置 → 心跳同步地址」填这个地址（用手机能访问到的那个 IP）
+ * Serving Flask app 'server'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5051
+ * Running on http://192.0.2.2:5051
+Press CTRL+C to quit
+127.0.0.1 - - [02/Aug/2026 09:09:54] "POST /sync HTTP/1.1" 200 -
+127.0.0.1 - - [02/Aug/2026 09:09:54] "POST /touch HTTP/1.1" 200 -
+127.0.0.1 - - [02/Aug/2026 09:09:54] "GET /status HTTP/1.1" 200 -
+127.0.0.1 - - [02/Aug/2026 09:09:54] "GET /pull HTTP/1.1" 200 -
