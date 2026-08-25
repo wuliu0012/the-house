@@ -1,4 +1,15 @@
+# 密钥与配置（绝不能提交）
+.env
+
+# Python 运行产物
 __pycache__/
 *.pyc
+
+# 日志
 server.log
-.env
+*.log
+
+# 系统与编辑器杂项
+.DS_Store
+Thumbs.db
+desktop.ini
