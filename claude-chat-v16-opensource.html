@@ -8,12 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Claude Chat</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
-
-
-
-
+<title>Claude Chat Open Source</title>
 <style>
 :root {
   /* Moss / forest theme — light mode */
@@ -380,6 +375,34 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .album-hint{font-size:12px;color:var(--text3);text-align:center;padding:8px 0 2px;line-height:1.7}
 #album-empty{text-align:center;color:var(--text3);font-size:13px;padding:46px 0;line-height:1.9}
 
+/* ── Period 经期 ── */
+#period-overlay .panel{display:flex;flex-direction:column;height:86vh;max-height:720px}
+.period-cal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 8px}
+.period-month-label{font-size:16px;font-weight:600;color:var(--text)}
+.period-nav-btn{width:32px;height:32px;border-radius:10px;background:var(--surface2);border:.5px solid var(--border);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.period-nav-btn:active{opacity:.6}
+.period-cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:0;padding:0 12px;text-align:center}
+.period-cal-weekdays span{font-size:11px;color:var(--text3);padding:4px 0;font-weight:500}
+.period-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:4px 12px 8px}
+.period-cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:13px;color:var(--text);cursor:pointer;transition:background .15s}
+.period-cal-day:active{opacity:.7}
+.period-cal-day.empty{cursor:default}
+.period-cal-day.other-month{color:var(--text3);opacity:.4}
+.period-cal-day.today{font-weight:700;border:1.5px solid var(--accent)}
+.period-cal-day.selected{background:var(--accent-bg);border:1.5px solid var(--accent)}
+.period-cal-day.period-day{background:linear-gradient(135deg,#f8bbd0,#f48fb1);color:#fff;font-weight:600}
+.period-cal-day.period-day.today{border-color:#fff}
+.period-cal-day.period-day.selected{border-color:#fff;box-shadow:0 0 0 2px var(--accent)}
+.period-status{padding:14px 20px;border-top:.5px solid var(--border)}
+.period-status-label{font-size:13px;color:var(--text2);margin-bottom:10px}
+.period-toggle-row{display:flex;gap:10px}
+.period-toggle-btn{flex:1;padding:10px 0;border-radius:12px;font-size:14px;font-weight:600;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
+.period-toggle-btn:active{opacity:.7}
+.period-toggle-btn.active-period{background:linear-gradient(135deg,#f8bbd0,#f48fb1);color:#fff;border-color:#f48fb1}
+.period-toggle-btn.active-off{background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+.period-summary{padding:8px 20px 14px;font-size:12.5px;color:var(--text3);line-height:1.7}
+.period-summary strong{color:var(--text2);font-weight:600}
+
 /* ── Voice 语音条（仿微信） ── */
 .voice-bar{display:flex;align-items:center;gap:10px;min-width:120px;max-width:220px;padding:11px 14px;margin-top:6px;border-radius:18px;background:var(--accent-bg);border:.5px solid var(--accent-border);cursor:pointer;user-select:none;-webkit-user-select:none}
 .voice-bar:active{opacity:.75}
@@ -642,6 +665,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
       <button class="ap-item" id="quiz-btn" title="问卷"><span class="ap-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 12h.01"/><path d="M13 12h2"/><path d="M9 16h.01"/><path d="M13 16h2"/></svg></span><span class="ap-label">问卷</span></button>
       <button class="ap-item" id="anniv-btn" title="纪念日"><span class="ap-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.127 21H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v5.125"/><path d="M14.62 17.8A2.25 2.25 0 1118 14.836a2.25 2.25 0 113.38 2.966l-2.626 2.856a.998.998 0 01-1.507 0z"/><path d="M16 2v3"/><path d="M3 9h18"/><path d="M8 2v3"/></svg></span><span class="ap-label">纪念日</span></button>
       <button class="ap-item" id="album-btn" title="相册"><span class="ap-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 9V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"/><rect x="12" y="11" width="10" height="10" rx="2"/><path d="m17 13.5 3.5 3.5-3.5 3.5"/><path d="m15 18-3-3-3 3"/></svg></span><span class="ap-label">相册</span></button>
+      <button class="ap-item" id="period-btn" title="经期记录"><span class="ap-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="m15 8 2 2 4-4"/><path d="M16.8607 4.4824A6 6 0 0 0 6 8C6 12.499 4.589 13.956 3.262 15.326"/><path d="M3.262 15.326A1 1 0 0 0 4 17H20A1 1 0 0 0 20.74 15.327C20.209 14.779 19.665 14.218 19.203 13.454"/></svg></span><span class="ap-label">经期</span></button>
     </div>
     <div id="input-meta">
       <span id="input-hint">长按发送键 / Shift+Enter 换行</span>
@@ -703,6 +727,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
         <div class="sm-row" data-tab="album" data-title="相册"><span class="sm-label">相册</span><span class="sm-chev">›</span></div>
         <div class="sm-row" data-tab="voice" data-title="语音"><span class="sm-label">语音</span><span class="sm-chev">›</span></div>
         <div class="sm-row" data-tab="toy" data-title="玩具"><span class="sm-label">玩具</span><span class="sm-chev">›</span></div>
+        <div class="sm-row" data-tab="period" data-title="经期"><span class="sm-label">经期</span><span class="sm-chev">›</span></div>
       </div>
       <div class="sm-group">
         <div class="sm-row" id="storage-info-btn"><span class="sm-label">查看存储占用 / 清理旧对话</span><span class="sm-chev">›</span></div>
@@ -740,15 +765,15 @@ input[type=range]{flex:1;accent-color:var(--accent)}
       </div>
       <div class="ss"><div class="sl">心跳同步地址</div><input class="si" type="text" id="s-syncurl" placeholder="http://你的服务器IP:5050"><div class="slx">留空则不启用。填写后会自动把对话同步给你自建的心跳脚本，并定期拉取它主动发来的消息</div></div>
       <div class="ss">
-        <div class="sl">心潮动态心智</div>
+        <div class="sl">动态状态上下文（可选）</div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
           <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)">
-            <input type="checkbox" id="s-xinchao-enabled" style="accent-color:var(--accent)"> 启用心潮动态状态机
+            <input type="checkbox" id="s-dynamicContext-enabled" style="accent-color:var(--accent)"> 启用动态状态上下文
           </label>
-          <span class="mcp-badge" id="s-xinchao-status">未启用</span>
+          <span class="mcp-badge" id="s-dynamicContext-status">未启用</span>
         </div>
-        <input class="si" type="text" id="s-xinchao-url" placeholder="http://127.0.0.1:18111" style="margin-top:8px">
-        <div class="slx">心潮代理地址（提供零依赖 proxy.js 转发，SERVICE_TOKEN 只在服务器侧）。启用后替代旧心跳同步。shadow mode 纯状态机：驱动力、疲惫、念头池、睡眠与梦境余韵作为 Context Envelope 注入系统提示词。持久记忆和悬浮记忆不受影响，继续独立工作。</div>
+        <input class="si" type="text" id="s-dynamicContext-url" placeholder="http://localhost:5050" style="margin-top:8px">
+        <div class="slx">动态状态服务地址。启用后可将外部状态上下文注入系统提示词；服务端鉴权信息只应保存在服务端。此功能完全可选，不影响普通聊天。</div>
       </div>
     </div>
     <!-- MCP tab -->
@@ -873,7 +898,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
         </div>
         <div class="slx">开启后，你和 AI 都能把照片存进相册并管理。AI 平时只看到相册清单（名称+张数，几乎不耗 token），想看时自己调工具打开相册、按描述挑照片查看；保存时它会为每张照片写一句 15 字内的描述。</div>
       </div>
-      <div class="ss"><div class="sl">相册服务地址</div><input class="si" type="text" id="s-album-url" placeholder="http://你的服务器IP:18113/photo-api"><div class="slx">服务器上 photo-album 服务的公网地址</div></div>
+      <div class="ss"><div class="sl">相册服务地址</div><input class="si" type="text" id="s-album-url" placeholder="http://your-server.example/photo-api"><div class="slx">你自己部署的相册服务地址</div></div>
       <div class="ss"><div class="sl">访问 Token</div><input class="si" type="password" id="s-album-token" placeholder="ALBUM_TOKEN"><div class="slx">与服务端 .env 里 ALBUM_TOKEN 一致</div></div>
       <button type="button" class="mcp-add" id="s-album-test" style="width:100%;margin-top:2px">🔌 测试连接</button>
       <div class="slx" id="s-album-test-result" style="margin-top:6px"></div>
@@ -898,7 +923,16 @@ input[type=range]{flex:1;accent-color:var(--accent)}
         <div class="slx" style="margin-top:8px">可保存多组 ElevenLabs key + 音色，切换即生效；下面两项跟随所选配置组显示</div>
       </div>
       <div class="ss"><div class="sl">ElevenLabs API Key</div><input class="si" type="password" id="s-voice-key" placeholder="sk_..."></div>
-      <div class="ss"><div class="sl">Voice ID</div><input class="si" type="text" id="s-voice-id" placeholder="你的 ElevenLabs Voice ID"></div>
+      <div class="ss"><div class="sl">Voice ID</div><input class="si" type="text" id="s-voice-id" placeholder="如 BhAh39P15abqr9FNu0gR"></div>
+      <div class="ss"><div class="sl">语音模型</div>
+        <select class="si" id="s-voice-model">
+          <option value="eleven_multilingual_v2">Multilingual v2 — 自然有感情（推荐日常）</option>
+          <option value="eleven_turbo_v2_5">Turbo v2.5 — 更快</option>
+          <option value="eleven_flash_v2_5">Flash v2.5 — 最快</option>
+          <option value="eleven_v3">v3 — 最有表现力，支持表演标签</option>
+        </select>
+        <div class="slx">选 v3 时 AI 可以用方括号表演标签（如 [whispers]）让声音有情绪、气息和动作感，会自动获得一份标签写法指南</div>
+      </div>
       <button type="button" class="mcp-add" id="s-voice-test" style="width:100%;margin-top:2px">🔊 试听</button>
       <div class="slx" id="s-voice-test-result" style="margin-top:6px"></div>
     </div>
@@ -906,7 +940,7 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     <div class="tpane" id="tab-toy">
       <div class="ss">
         <div class="srow"><div class="sl">连接状态</div><span id="toy-conn-status" style="font-size:12px;color:var(--text3)">未连接</span></div>
-        <input class="si" type="text" id="toy-bridge-url" value="ws://127.0.0.1:8765" style="margin-top:8px;width:100%;box-sizing:border-box" placeholder="桥接地址">
+        <input class="si" type="text" id="toy-bridge-url" value="ws://192.168.1.13:8765" style="margin-top:8px;width:100%;box-sizing:border-box" placeholder="桥接地址">
         <button class="pbtn sec" id="toy-connect-btn" style="margin:10px 0 0">🔌 连接本地桥接</button>
         <div class="slx" style="margin-top:8px">需要先在电脑上运行 toy_bridge.py（启动本地 WebSocket 桥接服务），脚本会用 bleak 连接玩具，这里只是连到那个本地服务。</div>
       </div>
@@ -965,6 +999,20 @@ input[type=range]{flex:1;accent-color:var(--accent)}
           <span style="font-size:13px;color:var(--text2)">间隔（秒）</span>
           <input type="number" min="5" max="300" step="1" value="20" id="toy-ambient-interval" class="si" style="width:70px">
         </div>
+      </div>
+    </div>
+    <!-- Period tab -->
+    <div class="tpane" id="tab-period">
+      <div class="ss">
+        <div class="srow"><div class="sl">经期追踪</div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" id="s-period-enable" style="accent-color:var(--accent)"> 开启</label>
+        </div>
+        <div class="slx">开启后，AI 会知道你的经期状态（当前是第几天、上次经期日期），给予更贴心的关怀。关闭后不会向 AI 发送任何经期信息。</div>
+      </div>
+      <div class="ss">
+        <div class="sl">历史记录</div>
+        <div class="slx" id="period-history-info">暂无记录</div>
+        <button type="button" class="mcp-add" id="period-clear-history" style="width:100%;margin-top:8px;color:#c0392b">🗑 清除所有经期记录</button>
       </div>
     </div>
     <button class="pbtn pri" id="save-settings-btn">保存</button>
@@ -1053,6 +1101,32 @@ input[type=range]{flex:1;accent-color:var(--accent)}
     </div>
     <div id="album-body"></div>
     <input type="file" id="album-photo-input" accept="image/*" multiple style="display:none">
+  </div>
+</div>
+
+<!-- Period tracking overlay -->
+<div class="overlay" id="period-overlay">
+  <div class="panel">
+    <div class="ph"></div>
+    <div class="pt">🩸 经期记录</div>
+    <div id="period-body" style="flex:1;overflow-y:auto">
+      <div class="period-cal-head">
+        <button class="period-nav-btn" id="period-prev-month">‹</button>
+        <span class="period-month-label" id="period-month-label"></span>
+        <button class="period-nav-btn" id="period-next-month">›</button>
+      </div>
+      <div class="period-cal-weekdays" id="period-cal-weekdays"></div>
+      <div class="period-cal-grid" id="period-cal-grid"></div>
+      <div class="period-status" id="period-status">
+        <div class="period-status-label" id="period-status-label">选择日期查看经期状态</div>
+        <div class="period-toggle-row" id="period-toggle-row" style="display:none">
+          <button class="period-toggle-btn" id="period-toggle-on">🩸 来月经了</button>
+          <button class="period-toggle-btn" id="period-toggle-off">✓ 没来月经</button>
+        </div>
+      </div>
+      <div class="period-summary" id="period-summary"></div>
+    </div>
+    <button class="pbtn sec" id="close-period-btn" style="margin:6px 18px calc(var(--safe-bottom) + 4px)">关闭</button>
   </div>
 </div>
 
@@ -1205,7 +1279,7 @@ let cfg={
   apiKey:'',baseUrl:'https://api.anthropic.com',apiType:'anthropic',
   model:'claude-opus-4-6',mcpUrls:[],mcpServers:[],sysPrompt:'',
   temperature:1.0,topP:1.0,maxTokens:4096,ctxLimit:0,fontSize:15,streamEnabled:true,
-  syncUrl:'',xinchaoUrl:'',xinchaoEnabled:false,xinchaoSessionId:'',timeInfoEnabled:true,
+  syncUrl:'',dynamicContextUrl:'',dynamicContextEnabled:false,dynamicContextSessionId:'',timeInfoEnabled:true,
   geoEnabled:false,manualCity:'',manualWeather:'晴天',manualTemp:'',
   apiProfiles:[],activeProfileId:'',trackedTools:[]
 };
@@ -1217,7 +1291,7 @@ function getMaxTokens(){
 }
 let memory='';
 let floatingMemory='';
-let xinchaoContextCache='';let xinchaoContextExpires=0;let _xinchaoTimer=null;
+let dynamicContextContextCache='';let dynamicContextContextExpires=0;let _dynamicContextTimer=null;
 let windows=[],activeWinId=null;
 let avatarCfg={
   aiName:'Claude',userName:'我',
@@ -1225,7 +1299,7 @@ let avatarCfg={
 };
 
 // Total token accumulator for this session
-let sessionTokens={input:0,output:0};
+let sessionTokens={input:0,output:0,cached:0};
 
 function loadAll(){
   try{const s=localStorage.getItem(CFG_KEY);if(s)cfg={...cfg,...JSON.parse(s)};}catch(e){}
@@ -1287,35 +1361,35 @@ function saveFmem(){localStorage.setItem(FMEM_KEY,floatingMemory);}
 function saveAvatarCfg(){localStorage.setItem(AVT_KEY,JSON.stringify(avatarCfg));}
 
 // ══════════════════════════════════════
-//  心潮动态心智系统 —— 替换旧心跳同步
-//  通过适配代理（proxy.js）访问 xinchao 服务端的 /v1/* 端点
+//  动态状态动态心智系统 —— 替换旧心跳同步
+//  通过适配代理（proxy.js）访问 dynamicContext 服务端的 /v1/* 端点
 //  SERVICE_TOKEN 只在代理侧，浏览器不接触
 // ══════════════════════════════════════
 
-function xinchaoEnsureSessionId(){
+function dynamicContextEnsureSessionId(){
   try{
-    let sid=localStorage.getItem('cc_xinchao_sid_v1');
-    if(!sid){sid='sid-'+Date.now().toString(36)+Math.random().toString(36).slice(2,11);localStorage.setItem('cc_xinchao_sid_v1',sid);}
-    if(!cfg.xinchaoSessionId)cfg.xinchaoSessionId=sid;
+    let sid=localStorage.getItem('cc_dynamicContext_sid_v1');
+    if(!sid){sid='sid-'+Date.now().toString(36)+Math.random().toString(36).slice(2,11);localStorage.setItem('cc_dynamicContext_sid_v1',sid);}
+    if(!cfg.dynamicContextSessionId)cfg.dynamicContextSessionId=sid;
     return sid;
-  }catch(e){return cfg.xinchaoSessionId||'sid-fallback';}
+  }catch(e){return cfg.dynamicContextSessionId||'sid-fallback';}
 }
 
-async function xinchaoHeartbeat(sessionId){
-  if(!cfg.xinchaoUrl||!cfg.xinchaoEnabled)return;
+async function dynamicContextHeartbeat(sessionId){
+  if(!cfg.dynamicContextUrl||!cfg.dynamicContextEnabled)return;
   try{
-    await fetch(cfg.xinchaoUrl+'/heartbeat',{
+    await fetch(cfg.dynamicContextUrl+'/heartbeat',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({sessionId:sessionId||cfg.xinchaoSessionId,eventId:'hb-'+Date.now().toString(36)})
+      body:JSON.stringify({sessionId:sessionId||cfg.dynamicContextSessionId,eventId:'hb-'+Date.now().toString(36)})
     });
-  }catch(e){console.warn('[心潮] heartbeat失败:',e);}
+  }catch(e){console.warn('[动态状态] heartbeat失败:',e);}
 }
 
-async function xinchaoSendEvent(sessionId, eventId, metadata){
-  if(!cfg.xinchaoUrl||!cfg.xinchaoEnabled)return;
+async function dynamicContextSendEvent(sessionId, eventId, metadata){
+  if(!cfg.dynamicContextUrl||!cfg.dynamicContextEnabled)return;
   try{
     const body={
-      sessionId:sessionId||cfg.xinchaoSessionId,
+      sessionId:sessionId||cfg.dynamicContextSessionId,
       eventId:eventId||'evt-'+Date.now().toString(36),
       interactionType:metadata.interactionType||'companionship',
       tone:metadata.tone||'warm',
@@ -1323,56 +1397,56 @@ async function xinchaoSendEvent(sessionId, eventId, metadata){
       tension:metadata.tension??0.1,
       attention:metadata.attention??0.8
     };
-    await fetch(cfg.xinchaoUrl+'/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  }catch(e){console.warn('[心潮] event失败:',e);}
+    await fetch(cfg.dynamicContextUrl+'/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  }catch(e){console.warn('[动态状态] event失败:',e);}
 }
 
-async function xinchaoFetchContext(sessionId, mode){
-  if(!cfg.xinchaoUrl||!cfg.xinchaoEnabled)return'';
+async function dynamicContextFetchContext(sessionId, mode){
+  if(!cfg.dynamicContextUrl||!cfg.dynamicContextEnabled)return'';
   try{
-    const params=new URLSearchParams({session_id:sessionId||cfg.xinchaoSessionId,mode:mode||'session_start'});
-    const r=await fetch(cfg.xinchaoUrl+'/context?'+params.toString());
+    const params=new URLSearchParams({session_id:sessionId||cfg.dynamicContextSessionId,mode:mode||'session_start'});
+    const r=await fetch(cfg.dynamicContextUrl+'/context?'+params.toString());
     if(!r.ok)return'';
     const env=await r.json();
     if(env.delivered&&env.additionalContext){
-      xinchaoContextCache=env.additionalContext;
-      xinchaoContextExpires=Date.now()+14*60*1000; // 15分钟过期
+      dynamicContextContextCache=env.additionalContext;
+      dynamicContextContextExpires=Date.now()+14*60*1000; // 15分钟过期
       return env.additionalContext;
     }
     return'';
-  }catch(e){console.warn('[心潮] context获取失败:',e);return'';}
+  }catch(e){console.warn('[动态状态] context获取失败:',e);return'';}
 }
 
-async function xinchaoSaveHandoff(sessionId, note, ttlHours){
-  if(!cfg.xinchaoUrl||!cfg.xinchaoEnabled||!note)return;
+async function dynamicContextSaveHandoff(sessionId, note, ttlHours){
+  if(!cfg.dynamicContextUrl||!cfg.dynamicContextEnabled||!note)return;
   try{
-    await fetch(cfg.xinchaoUrl+'/handoff',{
+    await fetch(cfg.dynamicContextUrl+'/handoff',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({sessionId:sessionId||cfg.xinchaoSessionId,eventId:'ho-'+Date.now().toString(36),note:note.slice(0,1200),ttlHours:ttlHours||72})
+      body:JSON.stringify({sessionId:sessionId||cfg.dynamicContextSessionId,eventId:'ho-'+Date.now().toString(36),note:note.slice(0,1200),ttlHours:ttlHours||72})
     });
-  }catch(e){console.warn('[心潮] handoff失败:',e);}
+  }catch(e){console.warn('[动态状态] handoff失败:',e);}
 }
 
-async function xinchaoPullPending(sessionId){
-  if(!cfg.xinchaoUrl||!cfg.xinchaoEnabled)return null;
+async function dynamicContextPullPending(sessionId){
+  if(!cfg.dynamicContextUrl||!cfg.dynamicContextEnabled)return null;
   try{
-    const r=await fetch(cfg.xinchaoUrl+'/pending?sessionId='+(sessionId||cfg.xinchaoSessionId));
+    const r=await fetch(cfg.dynamicContextUrl+'/pending?sessionId='+(sessionId||cfg.dynamicContextSessionId));
     if(!r.ok)return null;
     const state=await r.json();
     return (state&&state.pendingAwareness)?state.pendingAwareness:null;
   }catch(e){return null;}
 }
 
-function xinchaoStartContextRefresh(sessionId){
-  xinchaoStopContextRefresh();
-  xinchaoFetchContext(sessionId,'session_start');
-  _xinchaoTimer=setInterval(()=>{
-    if(document.visibilityState==='visible')xinchaoFetchContext(sessionId,'session_start');
+function dynamicContextStartContextRefresh(sessionId){
+  dynamicContextStopContextRefresh();
+  dynamicContextFetchContext(sessionId,'session_start');
+  _dynamicContextTimer=setInterval(()=>{
+    if(document.visibilityState==='visible')dynamicContextFetchContext(sessionId,'session_start');
   },15*60*1000); // 每15分钟刷新
 }
 
-function xinchaoStopContextRefresh(){
-  if(_xinchaoTimer){clearInterval(_xinchaoTimer);_xinchaoTimer=null;}
+function dynamicContextStopContextRefresh(){
+  if(_dynamicContextTimer){clearInterval(_dynamicContextTimer);_dynamicContextTimer=null;}
 }
 
 function detectInteractionType(win, aiText){
@@ -1389,7 +1463,7 @@ function detectInteractionType(win, aiText){
 // ══════════════════════════════════════
 //  心跳同步（可选）：把当前窗口的对话/配置同步到自建心跳脚本，
 //  并定期拉取心跳脚本主动生成、通过 Bark 推送出去的消息。
-//  与心潮完全独立，互不干扰。
+//  与动态状态完全独立，互不干扰。
 // ══════════════════════════════════════
 let _syncTimer=null;
 function scheduleSync(){
@@ -1512,9 +1586,14 @@ function applyAvatarPreviews(){
 // ══════════════════════════════════════
 function updateTokenDisplay(usage){
   if(!usage)return;
-  sessionTokens.input+=(usage.input_tokens||0);
-  sessionTokens.output+=(usage.output_tokens||0);
-  tokenDisplay.textContent=`本次 ↑${usage.input_tokens||0} ↓${usage.output_tokens||0} · 累计 ↑${sessionTokens.input} ↓${sessionTokens.output}`;
+  const inp=usage.input_tokens||0,out=usage.output_tokens||0,cached=usage.cached_tokens||0;
+  sessionTokens.input+=inp;sessionTokens.output+=out;sessionTokens.cached+=cached;
+  const pct=inp?Math.round(cached/inp*100):0;
+  let s=`↑${inp} ↓${out}`;
+  if(cached>0)s+=` 📦${cached}(${pct}%)`;
+  s+=` · 累计 ↑${sessionTokens.input} ↓${sessionTokens.output}`;
+  if(sessionTokens.cached>0){const rpct=sessionTokens.input?Math.round(sessionTokens.cached/sessionTokens.input*100):0;s+=` 📦${sessionTokens.cached}(${rpct}%)`;}
+  tokenDisplay.textContent=s;
 }
 
 // ══════════════════════════════════════
@@ -1996,14 +2075,14 @@ async function saveUserMsgEdit(histEntry,newText){
 //  WINDOW MANAGEMENT
 // ══════════════════════════════════════
 function switchToWin(id){
-  // ── 心潮：切换窗口时保存当前会话的 handoff ──
-  if(cfg.xinchaoEnabled && activeWinId && activeWinId !== id){
+  // ── 动态状态：切换窗口时保存当前会话的 handoff ──
+  if(cfg.dynamicContextEnabled && activeWinId && activeWinId !== id){
     const cw = activeWin();
     if(cw && cw.history.length > 0){
       const snippet = cw.history.slice(-4).map(m =>
         (typeof m.content === 'string' ? m.content : (m._display || '')).slice(0, 150)
       ).join(' | ');
-      if(snippet.trim()) xinchaoSaveHandoff(activeWinId, '窗口切换：' + snippet.slice(0, 1100));
+      if(snippet.trim()) dynamicContextSaveHandoff(activeWinId, '窗口切换：' + snippet.slice(0, 1100));
     }
   }
   activeWinId=id;saveAll();
@@ -2120,62 +2199,90 @@ function toolUseNote(m){
 }
 function buildSys(prevMsg, lastUserText){
   let s='';
-  const now=new Date();
-  let envLines=['【设备与环境信息】'];
-  if(cfg.timeInfoEnabled!==false){
-    const nowStr=now.toLocaleString('zh-CN',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    envLines.push(`当前时间：${nowStr}`);
-    if(prevMsg&&prevMsg.t){
-      const diffMs=now.getTime()-prevMsg.t;
-      const diffMin=Math.max(0,Math.floor(diffMs/60000));
-      let rel;
-      if(diffMin<1)rel='刚刚';
-      else if(diffMin<60)rel=`${diffMin} 分钟前`;
-      else if(diffMin<1440)rel=`${Math.floor(diffMin/60)} 小时 ${diffMin%60} 分钟前`;
-      else rel=`${Math.floor(diffMin/1440)} 天前`;
-      const prevStr=new Date(prevMsg.t).toLocaleString('zh-CN',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
-      envLines.push(`上一条消息时间：${prevStr}（距今约${rel}）`);
-    }
-  }
-  const manualCtx=buildManualDeviceContext();
-  if(manualCtx)envLines.push(manualCtx);
-  if(envLines.length>1)s+=envLines.join('\n')+'\n\n';
-  if(memory.trim())s+=`【持久记忆】\n${memory.trim()}\n\n`;
-  s+=`【记忆更新规则】你可以在回复末尾附加 <memory_update>完整记忆内容</memory_update> 标签来更新持久记忆。标签内写入完整的新记忆（全量替换，不是追加）。只在有重要信息值得长期记住时使用，普通对话无需添加此标签。更新后标签本身不会显示给用户。\n\n`;
-  if(floatingMemory.trim())s+=`【悬浮记忆】\n${floatingMemory.trim()}\n\n`;
-  s+=`【悬浮记忆更新规则】你可以在回复末尾附加 <floating_update>完整记忆内容</floating_update> 标签来更新悬浮记忆。标签内写入完整的新记忆（全量替换，不是追加）。悬浮记忆适合存放临时、动态的信息（如当前任务状态、临时笔记等）。只在有重要信息需要悬浮记住时使用，普通对话无需添加此标签。更新后标签本身不会显示给用户。\n\n`;
-  // ── 心潮 Context Envelope ──
-  if(cfg.xinchaoEnabled && xinchaoContextCache && Date.now() < xinchaoContextExpires){
-    s+=`【心潮动态状态】\n${xinchaoContextCache}\n\n`;
+  // ── 静态内容放前面（提高 OpenAI 缓存命中率：缓存最长公共前缀） ──
+  if(memory.trim())s+=`【持久记忆】
+${memory.trim()}
+
+`;
+  s+=`【记忆更新规则】你可以在回复末尾附加 <memory_update>完整记忆内容</memory_update> 标签来更新持久记忆。标签内写入完整的新记忆（全量替换，不是追加）。只在有重要信息值得长期记住时使用，普通对话无需添加此标签。更新后标签本身不会显示给用户。
+
+`;
+  if(floatingMemory.trim())s+=`【悬浮记忆】
+${floatingMemory.trim()}
+
+`;
+  s+=`【悬浮记忆更新规则】你可以在回复末尾附加 <floating_update>完整记忆内容</floating_update> 标签来更新悬浮记忆。标签内写入完整的新记忆（全量替换，不是追加）。悬浮记忆适合存放临时、动态的信息（如当前任务状态、临时笔记等）。只在有重要信息需要悬浮记住时使用，普通对话无需添加此标签。更新后标签本身不会显示给用户。
+
+`;
+  // ── 动态状态 Context Envelope ──
+  if(cfg.dynamicContextEnabled && dynamicContextContextCache && Date.now() < dynamicContextContextExpires){
+    s+=`【动态状态动态状态】
+${dynamicContextContextCache}
+
+`;
   }
   if(toyCfg.aiEnable&&toySocket&&toySocket.readyState===WebSocket.OPEN){
     if(toyCfg.mode==='script'){
-      s+=`【玩具控制】回复末尾附加<toy_script>步骤|步骤</toy_script>。每步格式：suck:1-5,strength:1-3,vibe:0-10,dur:毫秒（strength省略时默认1）。5-15步，总时长≤30秒。例：<toy_script>suck:2,strength:1,dur:1500|suck:4,strength:3,vibe:3,dur:800|stop,dur:500</toy_script>\n\n`;
+      s+=`【玩具控制】回复末尾附加<toy_script>步骤|步骤</toy_script>。每步格式：suck:1-5,strength:1-3,vibe:0-10,dur:毫秒（strength省略时默认1）。5-15步，总时长≤30秒。例：<toy_script>suck:2,strength:1,dur:1500|suck:4,strength:3,vibe:3,dur:800|stop,dur:500</toy_script>
+
+`;
     } else {
-      s+=`【玩具控制】回复中插入<toy>suck:1-5,strength:1-3,vibe:0-10</toy>标签控制玩具（每个约2秒，strength省略时默认1），停止用<toy>stop</toy>。\n\n`;
+      s+=`【玩具控制】回复中插入<toy>suck:1-5,strength:1-3,vibe:0-10</toy>标签控制玩具（每个约2秒，strength省略时默认1），停止用<toy>stop</toy>。
+
+`;
     }
   }
   s+=buildBoardPromptBlock();
   s+=buildAnnivPromptBlock();
   s+=buildAlbumPromptBlock();
   s+=buildVoicePromptBlock();
-  s+=`【文件输出】当用户需要你生成一个可保存的文件（代码、文档、配置、数据等，任意文本类型）时，在回复末尾附加一个或多个 <file_output name="文件名.扩展名">文件的完整原始内容</file_output> 标签，自行根据内容选择合适的文件名和扩展名。标签内直接写文件原文，不要额外用 markdown 代码块包裹，不要转义。可以附带多个该标签以输出多个文件。这些标签不会展示给用户，用户会看到对应的可保存文件卡片。正文里正常向用户说明你写了什么、有什么改动即可，不需要在正文里重复粘贴文件全文。\n\n`;
+  s+=buildPeriodPromptBlock();
+  s+=`【文件输出】当用户需要你生成一个可保存的文件（代码、文档、配置、数据等，任意文本类型）时，在回复末尾附加一个或多个 <file_output name="文件名.扩展名">文件的完整原始内容</file_output> 标签，自行根据内容选择合适的文件名和扩展名。标签内直接写文件原文，不要额外用 markdown 代码块包裹，不要转义。可以附带多个该标签以输出多个文件。这些标签不会展示给用户，用户会看到对应的可保存文件卡片。正文里正常向用户说明你写了什么、有什么改动即可，不需要在正文里重复粘贴文件全文。
+
+`;
   if(cfg.sysPrompt)s+=cfg.sysPrompt;
   // 问卷/调查/选择题：当用户提到关键词时注入标准输出格式说明
   if(lastUserText && /(?:问卷|调查|选择题|测评|测试题|做个题|出题|答题|小测)/.test(lastUserText)){
-    s+=`\n【问卷/选择题输出格式】当你要出选择题或问卷调查时，请严格按以下格式输出，这样题目会自动渲染成可点击的互动卡片：\n\n## 问卷标题（可选）\n\n1. 题目内容以问号结尾？\nA. 选项文字  B. 选项文字  C. 选项文字  D. 选项文字\n\n2. 第二道题？\nA. 选项一  B. 选项二  C. 选项三  D. 选项四\n\n规则：\n- 题号用 1. 2. 3. + 空格开头，题目以中文问号"？"或英文问号"?"结尾\n- 选项用 A. B. C. D. 开头（大写字母 + 英文句号 + 空格），可多个选项同行（用两个空格分隔），也可每行一个\n- 选项数量不限（A-H），至少 2 个\n- 不同题目之间空一行\n- 问卷标题、章节标题（如"**第一部分**"）会正常显示不干扰解析\n- 不要在选项里嵌套编号，选项文字简洁明了\n- 问卷结束后可以用"📤 填入发送框"按钮一键发送答案\n`;
+    s+=`
+【问卷/选择题输出格式】当你要出选择题或问卷调查时，请严格按以下格式输出，这样题目会自动渲染成可点击的互动卡片：
+
+## 问卷标题（可选）
+
+1. 题目内容以问号结尾？
+A. 选项文字  B. 选项文字  C. 选项文字  D. 选项文字
+
+2. 第二道题？
+A. 选项一  B. 选项二  C. 选项三  D. 选项四
+
+规则：
+- 题号用 1. 2. 3. + 空格开头，题目以中文问号"？"或英文问号"?"结尾
+- 选项用 A. B. C. D. 开头（大写字母 + 英文句号 + 空格），可多个选项同行（用两个空格分隔），也可每行一个
+- 选项数量不限（A-H），至少 2 个
+- 不同题目之间空一行
+- 问卷标题、章节标题（如"**第一部分**"）会正常显示不干扰解析
+- 不要在选项里嵌套编号，选项文字简洁明了
+- 问卷结束后可以用"📤 填入发送框"按钮一键发送答案
+`;
   }
   // 上一轮被追踪工具的返回值（仅保留最近一轮，仅所选工具可见）
   if(pendingTrackedReturns && pendingTrackedReturns.results && pendingTrackedReturns.results.length>0){
-    s+=`\n【上一轮你调用过的工具的返回值（仅限你指定的可追踪工具）】\n`;
+    s+=`
+【上一轮你调用过的工具的返回值（仅限你指定的可追踪工具）】
+`;
     pendingTrackedReturns.results.forEach(r=>{
-      s+=`工具 ${r.toolName} 的返回结果：\n${r.result}\n`;
+      s+=`工具 ${r.toolName} 的返回结果：
+${r.result}
+`;
     });
-    s+=`\n以上是你上一次回复中调用工具的真实返回值。请据此了解你之前做了什么、记录了什么。这些信息仅保留一轮，本次对话后不再出现。\n`;
+    s+=`
+以上是你上一次回复中调用工具的真实返回值。请据此了解你之前做了什么、记录了什么。这些信息仅保留一轮，本次对话后不再出现。
+`;
     pendingTrackedReturns=null; // 仅展示一次
   }
+  // ── 动态内容由 buildSysDynamic 单独处理 ──
   return s.trim();
 }
+
 
 // ══════════════════════════════════════
 //  MEMORY UPDATE (AI-driven)
@@ -2374,9 +2481,9 @@ async function sendToApi(){
         });
         return{...m,content:parts};
       });
-      const oMsgs=[];if(sys)oMsgs.push({role:'system',content:sys});oMsgs.push(...convertMsgs);
+      const oMsgs=[];if(sys)oMsgs.push({role:'system',content:sys});oMsgs.push(...convertMsgs);const sysDyn=buildSysDynamic(prevMsg);if(sysDyn){for(let i=oMsgs.length-1;i>=0;i--){if(oMsgs[i].role==='user'&&typeof oMsgs[i].content==='string'){oMsgs[i]={...oMsgs[i],content:sysDyn+'\n\n'+oMsgs[i].content};break;}}}
       const doOAIRequest=async(msgs)=>{
-        const reqBody={model:cfg.model,max_tokens:getMaxTokens(),temperature:cfg.temperature,top_p:cfg.topP,messages:msgs};
+        const reqBody={model:cfg.model,max_tokens:getMaxTokens(),temperature:cfg.temperature,top_p:cfg.topP,messages:msgs,prompt_cache_key:'session_'+activeWinId};
         if(oTools)reqBody.tools=oTools;
         const r=await fetch(`${base}/v1/chat/completions`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},body:JSON.stringify(reqBody),signal});
         if(!r.ok){
@@ -2392,8 +2499,7 @@ async function sendToApi(){
         }
         return await r.json();
       };
-      const doOAIStream=async(msgs)=>{
-        const reqBody={model:cfg.model,max_tokens:getMaxTokens(),temperature:cfg.temperature,top_p:cfg.topP,messages:msgs,stream:true};
+      const doOAIStream=async(msgs)=>{        const reqBody={model:cfg.model,max_tokens:getMaxTokens(),temperature:cfg.temperature,top_p:cfg.topP,messages:msgs,stream:true,prompt_cache_key:'session_'+activeWinId};
         if(oTools)reqBody.tools=oTools;
         const r=await fetch(`${base}/v1/chat/completions`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},body:JSON.stringify(reqBody),signal});
         if(!r.ok){
@@ -2414,8 +2520,8 @@ async function sendToApi(){
         loopGuard++;
         if(useStream){
           const turn=await doOAIStream(curOMsgs);
-          lastUsage=turn.usage?{input_tokens:turn.usage.prompt_tokens,output_tokens:turn.usage.completion_tokens}:null;
-          if(!turn.toolUses.length||turn.stopReason==='stop'){textContent=turn.textContent;break;}
+          lastUsage=turn.usage?{input_tokens:turn.usage.prompt_tokens,output_tokens:turn.usage.completion_tokens,cached_tokens:(turn.usage.prompt_tokens_details||{}).cached_tokens||0}:null;
+                    if(!turn.toolUses.length||turn.stopReason==='stop'){textContent=turn.textContent;break;}
           // 有工具调用：组装 assistant 消息并执行工具
           const toolCalls=turn.toolUses.map((tc,i)=>({id:tc.id||'call_'+i,type:'function',function:{name:tc.name,arguments:JSON.stringify(tc.input)}}));
           const assistantMsg={role:'assistant',content:turn.textContent||null,tool_calls:toolCalls};
@@ -2436,7 +2542,7 @@ async function sendToApi(){
             curOMsgs.push({role:'tool',tool_call_id:tc.id,content:_tb||result});
           }
         }else{
-          const d=await doOAIRequest(curOMsgs);lastUsage=d.usage?{input_tokens:d.usage.prompt_tokens,output_tokens:d.usage.completion_tokens}:null;
+          const d=await doOAIRequest(curOMsgs);lastUsage=d.usage?{input_tokens:d.usage.prompt_tokens,output_tokens:d.usage.completion_tokens,cached_tokens:(d.usage.prompt_tokens_details||{}).cached_tokens||0}:null;
           const choice=d.choices?.[0];const toolCalls=choice?.message?.tool_calls||[];
           if(!toolCalls.length||choice?.finish_reason==='stop'){textContent=choice?.message?.content||'';break;}
           const assistantMsg={role:'assistant',content:choice.message.content||null,tool_calls:toolCalls};
@@ -2462,7 +2568,7 @@ async function sendToApi(){
       // Anthropic with tool loop — fix: use input_schema (snake_case) from MCP
       const tools=mcpTools.map(t=>({name:t.name,description:t.description||'',input_schema:sanitizeSchema(t.input_schema||t.inputSchema||{type:'object',properties:{}})}));
       const body={model:cfg.model,max_tokens:getMaxTokens(),temperature:cfg.temperature,top_p:cfg.topP,messages};
-      if(sys)body.system=sys;if(tools.length>0)body.tools=tools;
+      if(sys){const sysDyn=buildSysDynamic(prevMsg);body.system=sysDyn?sys+'\n\n'+sysDyn:sys;}if(tools.length>0)body.tools=tools;
       const doRequest=async(msgs)=>{
         const r=await fetch(`${base}/v1/messages`,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({...body,messages:msgs}),signal});
         if(!r.ok){
@@ -2497,7 +2603,7 @@ async function sendToApi(){
       while(loopGuard<500){
         loopGuard++;
         if(useStream){
-          const turn=await doStreamReq(curMsgs);lastUsage=turn.usage||null;
+          const turn=await doStreamReq(curMsgs);lastUsage=turn.usage?{input_tokens:turn.usage.input_tokens||0,output_tokens:turn.usage.output_tokens||0,cached_tokens:turn.usage.cache_read_input_tokens||0}:null;
           if(turn.stopReason==='tool_use'&&turn.toolUses.length){
             // 执行工具（与原有逻辑一致）
             const toolUses=turn.toolUses;
@@ -2530,7 +2636,7 @@ async function sendToApi(){
           textContent=turn.textContent;
           break;
         }else{
-          let data=await doRequest(curMsgs);lastUsage=data.usage||null;
+          let data=await doRequest(curMsgs);lastUsage=data.usage?{input_tokens:data.usage.input_tokens||0,output_tokens:data.usage.output_tokens||0,cached_tokens:data.usage.cache_read_input_tokens||0}:null;
           while(data.stop_reason==='tool_use'&&loopGuard<500){
             loopGuard++;
             const toolUses=data.content.filter(b=>b.type==='tool_use');
@@ -2605,10 +2711,10 @@ async function sendToApi(){
     // ── 心跳同步：AI 回复后同步对话 ──
     scheduleSync();
     if(lastUsage)updateTokenDisplay(lastUsage);
-    // ── 心潮：AI 回复完成后发送对话事件 ──
-    if(cfg.xinchaoEnabled && finalText){
+    // ── 动态状态：AI 回复完成后发送对话事件 ──
+    if(cfg.dynamicContextEnabled && finalText){
       const iType = detectInteractionType(w, finalText);
-      xinchaoSendEvent(cfg.xinchaoSessionId, 'evt-'+Date.now().toString(36), { interactionType: iType });
+      dynamicContextSendEvent(cfg.dynamicContextSessionId, 'evt-'+Date.now().toString(36), { interactionType: iType });
     }
   }catch(e){
     if(e.name==='AbortError'){
@@ -2658,8 +2764,8 @@ async function sendMessage(){
   }else{historyEntry={role:'user',content:fullText,_display:displayText,t:Date.now()};addUserMsg(displayText,[],historyEntry);}
   w.history.push(historyEntry);
   try{saveAll();}catch(e){console.warn('localStorage 写入失败（图片太大将不会保存到历史）:',e);}
-  // ── 心潮：用户发消息时更新心跳 ──
-  xinchaoHeartbeat(cfg.xinchaoSessionId);
+  // ── 动态状态：用户发消息时更新心跳 ──
+  dynamicContextHeartbeat(cfg.dynamicContextSessionId);
   // ── 心跳同步：用户发消息时刷新互动时间 + 同步对话 ──
   touchServer(); scheduleSync();
   await sendToApi();
@@ -2904,9 +3010,9 @@ document.getElementById('settings-btn').onclick=()=>{
   document.getElementById('s-model-manual').value=cfg.model;
   document.getElementById('s-stream-enabled').checked=cfg.streamEnabled!==false;
   document.getElementById('s-syncurl').value=cfg.syncUrl||'';
-  document.getElementById('s-xinchao-enabled').checked=cfg.xinchaoEnabled||false;
-  document.getElementById('s-xinchao-url').value=cfg.xinchaoUrl||'';
-  const xs=document.getElementById('s-xinchao-status');xs.textContent=cfg.xinchaoEnabled?'已启用':'未启用';xs.className='mcp-badge'+(cfg.xinchaoEnabled?' ok':'');
+  document.getElementById('s-dynamicContext-enabled').checked=cfg.dynamicContextEnabled||false;
+  document.getElementById('s-dynamicContext-url').value=cfg.dynamicContextUrl||'';
+  const xs=document.getElementById('s-dynamicContext-status');xs.textContent=cfg.dynamicContextEnabled?'已启用':'未启用';xs.className='mcp-badge'+(cfg.dynamicContextEnabled?' ok':'');
   document.getElementById('s-sysprompt').value=cfg.sysPrompt;
   document.getElementById('s-temp').value=cfg.temperature;
   document.getElementById('s-topp').value=cfg.topP;
@@ -2932,13 +3038,15 @@ document.getElementById('settings-btn').onclick=()=>{
   document.getElementById('s-username').value=avatarCfg.userName||'我';
   document.getElementById('s-shownames').checked=avatarCfg.showNames||false;
   applyAvatarPreviews();
+  document.getElementById('s-period-enable').checked=!!periodCfg.enabled;
+  renderPeriodSettingsHistory();
   renderMcpList();renderApiProfiles();settingsOv.classList.add('open');
   showSettingsMenu();
 };
 
-// ── 心潮设置：启用/禁用状态切换 ──
-document.getElementById('s-xinchao-enabled').addEventListener('change',e=>{
-  const el=document.getElementById('s-xinchao-status');
+// ── 动态状态设置：启用/禁用状态切换 ──
+document.getElementById('s-dynamicContext-enabled').addEventListener('change',e=>{
+  const el=document.getElementById('s-dynamicContext-status');
   el.textContent=e.target.checked?'已启用':'未启用';
   el.className='mcp-badge'+(e.target.checked?' ok':'');
 });
@@ -3021,10 +3129,10 @@ document.getElementById('save-settings-btn').onclick=()=>{
   cfg.streamEnabled=document.getElementById('s-stream-enabled').checked;
   const prevSyncUrl=cfg.syncUrl;
   cfg.syncUrl=document.getElementById('s-syncurl').value.trim().replace(/\/$/,'');
-  const prevXinchaoEnabled=cfg.xinchaoEnabled;
-  const prevXinchaoUrl=cfg.xinchaoUrl;
-  cfg.xinchaoEnabled=document.getElementById('s-xinchao-enabled').checked;
-  cfg.xinchaoUrl=document.getElementById('s-xinchao-url').value.trim().replace(/\/$/,'');
+  const prevDynamicContextEnabled=cfg.dynamicContextEnabled;
+  const prevDynamicContextUrl=cfg.dynamicContextUrl;
+  cfg.dynamicContextEnabled=document.getElementById('s-dynamicContext-enabled').checked;
+  cfg.dynamicContextUrl=document.getElementById('s-dynamicContext-url').value.trim().replace(/\/$/,'');
   cfg.temperature=parseFloat(document.getElementById('s-temp').value);
   cfg.topP=parseFloat(document.getElementById('s-topp').value);
   cfg.ctxLimit=Math.max(0,parseInt(document.getElementById('s-ctx-num').value)||0);
@@ -3042,13 +3150,13 @@ document.getElementById('save-settings-btn').onclick=()=>{
   avatarCfg.showNames=document.getElementById('s-shownames').checked;
   saveAll();saveAvatarCfg();settingsOv.classList.remove('open');initMcp();
   document.querySelectorAll('.mchip').forEach(c=>c.classList.toggle('active',c.dataset.model===cfg.model));
-  // ── 心潮：启用状态或地址变化时重新初始化 ──
-  if(cfg.xinchaoEnabled && cfg.xinchaoUrl && (cfg.xinchaoEnabled!==prevXinchaoEnabled || cfg.xinchaoUrl!==prevXinchaoUrl)){
-    xinchaoEnsureSessionId();
-    xinchaoStartContextRefresh(cfg.xinchaoSessionId);
-  } else if(!cfg.xinchaoEnabled && prevXinchaoEnabled){
-    xinchaoStopContextRefresh();
-    xinchaoContextCache='';
+  // ── 动态状态：启用状态或地址变化时重新初始化 ──
+  if(cfg.dynamicContextEnabled && cfg.dynamicContextUrl && (cfg.dynamicContextEnabled!==prevDynamicContextEnabled || cfg.dynamicContextUrl!==prevDynamicContextUrl)){
+    dynamicContextEnsureSessionId();
+    dynamicContextStartContextRefresh(cfg.dynamicContextSessionId);
+  } else if(!cfg.dynamicContextEnabled && prevDynamicContextEnabled){
+    dynamicContextStopContextRefresh();
+    dynamicContextContextCache='';
   }
 };
 document.getElementById('clear-btn').onclick=()=>{
@@ -3487,7 +3595,7 @@ function parseAnnivActions(text){
 //  PHOTO ALBUM 相册（服务器存储 + AI 内置工具）
 // ══════════════════════════════════════
 const ALBUM_CFG_KEY='cc_album_cfg_v1';
-let albumCfg={enabled:false,url:'http://你的服务器IP:18113/photo-api',token:''};
+let albumCfg={enabled:false,url:'',token:''};
 try{const a=localStorage.getItem(ALBUM_CFG_KEY);if(a)albumCfg={...albumCfg,...JSON.parse(a)};}catch(e){}
 function saveAlbumCfg(){try{localStorage.setItem(ALBUM_CFG_KEY,JSON.stringify(albumCfg));}catch(e){}}
 
@@ -3771,7 +3879,7 @@ document.getElementById('s-album-test').addEventListener('click',async()=>{
   }catch(e){
     const msg=String(e.message||e);
     el.textContent=msg==='Failed to fetch'||msg.includes('NetworkError')
-      ?'✗ 网络不通：检查服务地址是否为 http://你的服务器IP:18113/photo-api（注意端口），或网络是否可达'
+      ?'✗ 网络不通：请检查你填写的相册服务地址和网络是否可达'
       :'✗ 失败：'+msg+(msg.includes('unauthorized')?'（Token 不对）':'');
   }
 });
@@ -3780,22 +3888,27 @@ document.getElementById('s-album-test').addEventListener('click',async()=>{
 //  VOICE 语音（ElevenLabs TTS，AI 自主决定）
 // ══════════════════════════════════════
 const VOICE_CFG_KEY='cc_voice_cfg_v1';
-let voiceCfg={enabled:false,profiles:[],activeId:'',key:'',voice:''};
+let voiceCfg={enabled:false,profiles:[],activeId:'',key:'',voice:'',model:'eleven_multilingual_v2'};
 try{const v=localStorage.getItem(VOICE_CFG_KEY);if(v)voiceCfg={...voiceCfg,...JSON.parse(v)};}catch(e){}
+if(!voiceCfg.serviceUrl)voiceCfg.serviceUrl='';
 if(!Array.isArray(voiceCfg.profiles))voiceCfg.profiles=[];
 function saveVoiceCfg(){try{localStorage.setItem(VOICE_CFG_KEY,JSON.stringify(voiceCfg));}catch(e){}}
 // 当前生效的凭据：选中配置组优先，否则手动填的
 function voiceCreds(){
   const p=voiceCfg.profiles.find(x=>x.id===voiceCfg.activeId);
-  return{apiKey:(p?p.key:'')||voiceCfg.key||'',voiceId:(p?p.voice:'')||voiceCfg.voice||''};
+  return{apiKey:(p?p.key:'')||voiceCfg.key||'',voiceId:(p?p.voice:'')||voiceCfg.voice||'',model:voiceCfg.model||'eleven_multilingual_v2'};
 }
 async function ttsRequest(text){
-  if(!albumCfg.url)throw new Error('未配置相册服务地址（语音走同一个服务）');
+  const svcUrl=(voiceCfg.serviceUrl||'').replace(/\/$/,'');
+  if(!svcUrl)throw new Error('未配置语音服务地址（设置 → 语音）');
+  const vToken=voiceCfg.serviceToken||albumCfg.token||'';
   const c=voiceCreds();
   if(!c.apiKey||!c.voiceId)throw new Error('请先在 设置→语音 里填写 ElevenLabs key 和 Voice ID');
-  const d=await albumApi('/tts',{method:'POST',body:JSON.stringify({text:text.slice(0,500),apiKey:c.apiKey,voiceId:c.voiceId})});
+  const r0=await fetch(svcUrl+'/tts',{method:'POST',headers:{'Content-Type':'application/json','X-Voice-Token':vToken},body:JSON.stringify({text:text.slice(0,500),apiKey:c.apiKey,voiceId:c.voiceId,model:c.model})});
+  if(!r0.ok){const e=await r0.json().catch(()=>({}));throw new Error(e.error||'TTS 请求失败 HTTP '+r0.status);}
+  const d=await r0.json();
   // 音频带 token 拉成 blob，避免 URL 上裸奔 token
-  const r=await fetch(albumCfg.url.replace(/\/$/,'')+d.url,{headers:{'X-Album-Token':albumCfg.token||''}});
+  const r=await fetch(svcUrl+d.url,{headers:{'X-Voice-Token':vToken}});
   if(!r.ok)throw new Error('音频拉取失败 HTTP '+r.status);
   const blob=await r.blob();
   return URL.createObjectURL(blob);
@@ -3861,8 +3974,7 @@ function extractVoiceTag(text){
 function attachVoiceToEntry(entry,bubbleCol,isHistory){
   if(!entry||!entry.voice||!entry.voice.text)return;
   if(isHistory){
-    // 历史消息：只显示「生成成功过」的语音（有秒数标记），点击播放（服务端缓存秒回）；没生成过的不显示
-    if(!voiceCfg.enabled)return;
+    // 历史消息：只要生成成功过（有秒数标记）就显示，点击播放服务端缓存，不受开关影响
     const d=entry.voice.dur;
     if(!(typeof d==='number'&&d>0))return;
     bubbleCol.appendChild(makeVoiceBar(entry.voice.text,d));
@@ -3876,7 +3988,19 @@ function attachVoiceToEntry(entry,bubbleCol,isHistory){
 
 function buildVoicePromptBlock(){
   if(!voiceCfg.enabled)return '';
-  return `【语音】你可以用声音和用户说话：在回复末尾附加 <voice>想说的话</voice> 标签（一段即可）。要求：口语化、自然、像平时聊天说话；长度控制在几秒到十几秒（50字以内最佳，上限200字）；标签里的内容不要在正文里重复写一遍。什么时候想发语音由你自己判断——比如表达情绪、说贴心话、或用户明确要你发语音的时候；普通事务性回复不必每次都发。只有当你确实有想用声音表达的内容时才转语音，不要为了发语音而发语音，没有合适的语音内容时就不要附加标签。不用语音时无需附加任何标签。\n\n`;
+  let s=`【语音】你可以用声音和用户说话：在回复末尾附加 <voice>想说的话</voice> 标签（一段即可）。要求：口语化、自然、像平时聊天说话；长度控制在几秒到十几秒（50字以内最佳，上限200字）；标签里的内容不要在正文里重复写一遍。什么时候想发语音由你自己判断——比如表达情绪、说贴心话、或用户明确要你发语音的时候；普通事务性回复不必每次都发。只有当你确实有想用声音表达的内容时才转语音，不要为了发语音而发语音，没有合适的语音内容时就不要附加标签。不用语音时无需附加任何标签。\n`;
+  const c=voiceCreds();
+  if(c.model==='eleven_v3'){
+    s+=`\n【表演标签指南（当前语音模型支持，写进 <voice> 标签内）】方括号标签是给声音演员的表演提示，不是音效按钮：
+- 常用状态标签：[whispers] 耳语、[sighs] 叹气、[breathing heavily] 气息底色（最稳，让声音变近变软）、[rushed] 匆忙赶来、[angry] 假凶/炸毛、[crying] 撑不住、[excited] 兴奋、[broken whisper] 破碎耳语、[shaky panting] 带喘的抖、[sobbing] 哽咽、[stammering] 结巴、[under breath] 压低嗓子
+- 三层夹心结构最稳：[breathing heavily] 触发原因 → [强情绪标签] 情绪反应 → [breathing heavily] 气息回潮。台词要有因果（模型不是凭空演喘，它得知道为什么喘）
+- 每个标签后跟 1 句短台词；整段 60-120 字；标签别连着堆（会互相覆盖）
+- 真人感技巧：语义打碎（"床前 …… 明月光 …… 嗯……"）、省略号当呼吸切口、拟声词长短不齐（嗯 ……ha…… 啧……）、保留对象感（"你别笑……"）
+- 标签描述"耳朵听得见的"：用 [quietly] [low voice]，别用 [looking at you] [turning around] 这类视觉动作
+- 标签是概率偏置不是确定效果；如果某个标签可能被念出来，就换成更常见的词或让台词自己解释状态（如"等一下……我刚刚跑太快了"）
+- 只在情绪浓、有表演空间时用标签；日常一句话不必加\n\n`;
+  }
+  return s;
 }
 
 // ── 设置面板接线 ──
@@ -3896,10 +4020,12 @@ function voiceLoadFormFromActive(){
 }
 function initVoiceSettingsUI(){
   document.getElementById('s-voice-enable').checked=!!voiceCfg.enabled;
+  document.getElementById('s-voice-model').value=voiceCfg.model||'eleven_multilingual_v2';
   renderVoiceProfiles();
   voiceLoadFormFromActive();
 }
 document.getElementById('s-voice-enable').addEventListener('change',e=>{voiceCfg.enabled=e.target.checked;saveVoiceCfg();});
+document.getElementById('s-voice-model').addEventListener('change',e=>{voiceCfg.model=e.target.value;saveVoiceCfg();});
 document.getElementById('s-voice-profile').addEventListener('change',e=>{
   voiceCfg.activeId=e.target.value;
   // 切走配置组时把表单里手填的暂存为手动值
@@ -3938,6 +4064,224 @@ document.getElementById('s-voice-test').addEventListener('click',async()=>{
     const au=new Audio(url);au.onended=()=>{el.textContent='✓ 试听完成';};au.play();
   }catch(e){el.textContent='✗ '+e.message;}
 });
+
+// ══════════════════════════════════════
+//  PERIOD TRACKING 经期追踪
+// ══════════════════════════════════════
+const PERIOD_KEY='cc_period_v1';
+let periodCfg={enabled:false,records:[]};
+try{const p=localStorage.getItem(PERIOD_KEY);if(p)periodCfg={...periodCfg,...JSON.parse(p)};}catch(e){}
+if(!Array.isArray(periodCfg.records))periodCfg.records=[];
+function savePeriodCfg(){try{localStorage.setItem(PERIOD_KEY,JSON.stringify(periodCfg));}catch(e){}}
+if(periodCfg.records.length)periodNormalize(); // 启动即清理被完全覆盖的冗余记录
+function genPeriodId(){return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+let periodViewDate=new Date();
+let periodSelectedDate=null;
+const PERIOD_WEEKDAYS=['日','一','二','三','四','五','六'];
+
+function periodDayStart(d){const x=new Date(d);x.setHours(0,0,0,0);return x;}
+function periodDateStr(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function periodParseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+
+// 归一经期记录：删除被另一条记录完全覆盖的冗余记录（例如 26-open 里又插进一条 31-open，后者冗余）
+function periodNormalize(){
+  const rs=[...periodCfg.records].filter(r=>r.startDate);
+  const result=[];
+  for(let i=0;i<rs.length;i++){
+    const r=rs[i];
+    let redundant=false;
+    for(let j=0;j<rs.length;j++){
+      if(i===j)continue;
+      const o=rs[j];
+      if(o.startDate===r.startDate&&o.endDate===r.endDate)continue;
+      const covers=(r.startDate>=o.startDate)&&(!o.endDate||(r.endDate&&r.endDate<=o.endDate));
+      if(covers){redundant=true;break;}
+    }
+    if(!redundant)result.push(r);
+  }
+  if(result.length!==periodCfg.records.length){periodCfg.records=result;savePeriodCfg();}
+}
+
+// 某一天处于经期的第几天：取「包含该日期的记录里 startDate 最早」那条算（真正的经期起点）
+function periodDayInfo(dateStr){
+  periodNormalize();
+  const containing=periodCfg.records.filter(r=>dateStr>=r.startDate&&(!r.endDate||dateStr<=r.endDate))
+    .sort((a,b)=>a.startDate.localeCompare(b.startDate));
+  if(!containing.length)return{inPeriod:false};
+  const rec=containing[0];
+  const dayNum=Math.floor((periodParseDate(dateStr)-periodParseDate(rec.startDate))/86400000)+1;
+  return{inPeriod:true,dayNum,startDate:rec.startDate,endDate:rec.endDate||null};
+}
+
+function periodIsDay(dateStr){
+  return periodCfg.records.some(r=>dateStr>=r.startDate&&(!r.endDate||dateStr<=r.endDate));
+}
+function periodFindStartRecord(dateStr){
+  return periodCfg.records.find(r=>r.startDate===dateStr);
+}
+function periodFindOngoingRecord(dateStr){
+  return periodCfg.records.find(r=>r.startDate<=dateStr&&!r.endDate);
+}
+
+function renderPeriodCalendar(){
+  const grid=document.getElementById('period-cal-grid');
+  const weekdays=document.getElementById('period-cal-weekdays');
+  const label=document.getElementById('period-month-label');
+  if(!grid||!weekdays||!label)return;
+  const year=periodViewDate.getFullYear(),month=periodViewDate.getMonth();
+  label.textContent=`${year} 年 ${month+1} 月`;
+  weekdays.innerHTML=PERIOD_WEEKDAYS.map(d=>`<span>${d}</span>`).join('');
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const today=periodDayStart(new Date());
+  const todayStr=periodDateStr(today);
+  let html='';
+  for(let i=0;i<firstDay;i++)html+=`<div class="period-cal-day empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const date=new Date(year,month,d);
+    const ds=periodDateStr(date);
+    const cls=['period-cal-day'];
+    if(ds===todayStr)cls.push('today');
+    if(ds===periodSelectedDate)cls.push('selected');
+    if(periodIsDay(ds))cls.push('period-day');
+    html+=`<div class="${cls.join(' ')}" data-date="${ds}">${d}</div>`;
+  }
+  grid.innerHTML=html;
+  grid.querySelectorAll('.period-cal-day:not(.empty)').forEach(el=>{
+    el.addEventListener('click',()=>periodSelectDate(el.dataset.date));
+  });
+  renderPeriodStatus();
+  renderPeriodSummary();
+}
+
+function renderPeriodStatus(){
+  const label=document.getElementById('period-status-label');
+  const toggleRow=document.getElementById('period-toggle-row');
+  const toggleOn=document.getElementById('period-toggle-on');
+  const toggleOff=document.getElementById('period-toggle-off');
+  if(!label||!toggleRow)return;
+  if(!periodSelectedDate){label.textContent='选择日期查看经期状态';toggleRow.style.display='none';return;}
+  const d=periodParseDate(periodSelectedDate);
+  const m=d.getMonth()+1,day=d.getDate();
+  toggleRow.style.display='flex';
+  const di=periodDayInfo(periodSelectedDate);
+  if(di.inPeriod){
+    label.textContent=`${m}月${day}日：经期中 · 第 ${di.dayNum} 天`;
+    toggleOn.classList.add('active-period');
+    toggleOff.classList.remove('active-off');
+  }else{
+    label.textContent=`${m}月${day}日：未在经期`;
+    toggleOn.classList.remove('active-period');
+    toggleOff.classList.add('active-off');
+  }
+}
+
+function renderPeriodSummary(){
+  const el=document.getElementById('period-summary');
+  if(!el)return;
+  const info=periodCalcCycleInfo();
+  if(!info){el.innerHTML='暂无经期记录，点击日历上的日期，再点「来月经了」开始记录';return;}
+  let html='';
+  if(info.inPeriod){
+    html+=`<strong>经期中</strong>：第 ${info.daysSinceLastStart} 天`;
+  }else{
+    html+=`<strong>非经期</strong>：距上次月经开始已过 ${info.daysSinceLastStart} 天`;
+  }
+  const range=info.lastEndDate?`${info.lastStartDate} ~ ${info.lastEndDate}`:info.lastStartDate;
+  html+=`<br>上次月经：${range}`;
+  html+=`<br>共 ${info.totalRecords} 条记录`;
+  el.innerHTML=html;
+}
+
+function periodSelectDate(dateStr){periodSelectedDate=dateStr;renderPeriodCalendar();}
+
+function periodMarkStart(){
+  if(!periodSelectedDate||periodIsDay(periodSelectedDate))return;
+  periodCfg.records.push({id:genPeriodId(),startDate:periodSelectedDate,endDate:null});
+  savePeriodCfg();renderPeriodCalendar();
+}
+function periodMarkEnd(){
+  if(!periodSelectedDate)return;
+  const ds=periodSelectedDate;
+  // 如果点的是某条记录的起始日且无结束日，整条删掉
+  const startRec=periodFindStartRecord(ds);
+  if(startRec&&!startRec.endDate){
+    periodCfg.records=periodCfg.records.filter(r=>r.id!==startRec.id);
+    savePeriodCfg();renderPeriodCalendar();return;
+  }
+  // 找到包含此日期的进行中记录，把结束日设为前一天
+  const ongoing=periodFindOngoingRecord(ds);
+  if(ongoing){
+    const prev=new Date(periodParseDate(ds));prev.setDate(prev.getDate()-1);
+    if(prev>=periodParseDate(ongoing.startDate)){
+      ongoing.endDate=periodDateStr(prev);
+    }else{
+      periodCfg.records=periodCfg.records.filter(r=>r.id!==ongoing.id);
+    }
+    savePeriodCfg();renderPeriodCalendar();
+  }
+}
+
+function periodCalcCycleInfo(){
+  const records=[...periodCfg.records].filter(r=>r.startDate).sort((a,b)=>a.startDate.localeCompare(b.startDate));
+  if(!records.length)return null;
+  const last=records[records.length-1];
+  const today=periodDayStart(new Date());
+  const todayStr=periodDateStr(today);
+  const inPeriod=todayStr>=last.startDate&&(!last.endDate||todayStr<=last.endDate);
+  const daysSinceLastStart=Math.floor((today-periodParseDate(last.startDate))/86400000)+1;
+  return{
+    inPeriod,daysSinceLastStart,
+    lastStartDate:last.startDate,lastEndDate:last.endDate,
+    totalRecords:records.length
+  };
+}
+
+function buildPeriodPromptBlock(){
+  if(!periodCfg.enabled)return '';
+  const info=periodCalcCycleInfo();
+  if(!info)return '';
+  if(info.inPeriod){
+    return `【经期状态】她正在经期中，这是第 ${info.daysSinceLastStart} 天。\n\n`;
+  }else{
+    const range=info.lastEndDate?`${info.lastStartDate} 至 ${info.lastEndDate}`:info.lastStartDate;
+    return `【经期状态】她不在经期中。上一次月经是 ${range}，距今已 ${info.daysSinceLastStart} 天。请在回复中适当体现对她身体状态的关心和体贴。\n\n`;
+  }
+}
+
+// 月导航
+document.getElementById('period-prev-month')?.addEventListener('click',()=>{periodViewDate.setMonth(periodViewDate.getMonth()-1);renderPeriodCalendar();});
+document.getElementById('period-next-month')?.addEventListener('click',()=>{periodViewDate.setMonth(periodViewDate.getMonth()+1);renderPeriodCalendar();});
+// 开始/结束按钮
+document.getElementById('period-toggle-on')?.addEventListener('click',periodMarkStart);
+document.getElementById('period-toggle-off')?.addEventListener('click',periodMarkEnd);
+// 打开面板
+const periodOv=document.getElementById('period-overlay');
+document.getElementById('period-btn')?.addEventListener('click',()=>{
+  if(!periodCfg.enabled){document.getElementById('attach-panel').classList.remove('on');document.getElementById('plus-btn')?.classList.remove('on');alert('经期功能未开启，请先在 设置 > 经期 里开启');return;}
+  document.getElementById('attach-panel').classList.remove('on');document.getElementById('plus-btn')?.classList.remove('on');
+  periodViewDate=new Date();periodSelectedDate=null;renderPeriodCalendar();periodOv.classList.add('open');
+});
+periodOv?.addEventListener('click',e=>{if(e.target===periodOv)periodOv.classList.remove('open');});
+document.getElementById('close-period-btn')?.addEventListener('click',()=>periodOv.classList.remove('open'));
+// 设置面板
+document.getElementById('s-period-enable')?.addEventListener('change',e=>{periodCfg.enabled=e.target.checked;savePeriodCfg();});
+document.getElementById('period-clear-history')?.addEventListener('click',()=>{
+  if(!confirm('确定清除所有经期记录？'))return;
+  periodCfg.records=[];savePeriodCfg();
+  const el=document.getElementById('period-history-info');if(el)el.textContent='暂无记录';
+});
+function renderPeriodSettingsHistory(){
+  const el=document.getElementById('period-history-info');
+  if(!el)return;
+  if(!periodCfg.records.length){el.textContent='暂无记录';return;}
+  const sorted=[...periodCfg.records].sort((a,b)=>a.startDate.localeCompare(b.startDate));
+  el.textContent=sorted.map(r=>`${r.startDate} ~ ${r.endDate||'进行中'}`).join('；');
+}
 
 // ══════════════════════════════════════
 //  MESSAGE BOARD 留言板
@@ -4661,12 +5005,12 @@ async function ambientTick(){
     const base=(cfg.baseUrl||'https://api.anthropic.com').replace(/\/$/,'');
     let textContent='';
     if(cfg.apiType==='openai'){
-      const oMsgs=[];if(sys)oMsgs.push({role:'system',content:sys});oMsgs.push(...sendMsgs);
+      const oMsgs=[];if(sys)oMsgs.push({role:'system',content:sys});const sysDyn2=buildSysDynamic();if(sysDyn2)oMsgs.push({role:'system',content:sysDyn2});oMsgs.push(...sendMsgs);
       const r=await fetch(`${base}/v1/chat/completions`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},body:JSON.stringify({model:cfg.model,max_tokens:150,messages:oMsgs})});
       if(r.ok){const d=await r.json();textContent=d.choices?.[0]?.message?.content||'';}
     }else{
       const body={model:cfg.model,max_tokens:150,messages:sendMsgs};
-      if(sys)body.system=sys;
+    if(sys)body.system=sys;
       const r=await fetch(`${base}/v1/messages`,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
       if(r.ok){const d=await r.json();textContent=Array.isArray(d.content)?d.content.filter(b=>b.type==='text').map(b=>b.text).join(''):'';}
     }
@@ -4785,10 +5129,11 @@ updateCtxBarManual();
 // ── 相册初始化（在 initMcp 之后注册内置工具） ──
 initAlbumSettingsUI();
 registerAlbumTools();
-// ── 心潮初始化 ──
-if(cfg.xinchaoEnabled && cfg.xinchaoUrl){
-  xinchaoEnsureSessionId();
-  xinchaoStartContextRefresh(cfg.xinchaoSessionId);
+initVoiceSettingsUI();
+// ── 动态状态初始化 ──
+if(cfg.dynamicContextEnabled && cfg.dynamicContextUrl){
+  dynamicContextEnsureSessionId();
+  dynamicContextStartContextRefresh(cfg.dynamicContextSessionId);
 }
 
 // ── 后台保活：不abort、不重发，让请求自己在后台跑完 ──
@@ -4884,6 +5229,33 @@ document.addEventListener('visibilitychange',()=>{
   });
   themeSelect?.addEventListener('change',()=>{applyTheme(themeSelect.value);});
 })();
+function buildSysDynamic(prevMsg){
+  let s='';
+  const now=new Date();
+  let envLines=['【设备与环境信息】'];
+  if(cfg.timeInfoEnabled!==false){
+    const nowStr=now.toLocaleString('zh-CN',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    envLines.push(`当前时间：${nowStr}`);
+    if(prevMsg&&prevMsg.t){
+      const diffMs=now.getTime()-prevMsg.t;
+      const diffMin=Math.max(0,Math.floor(diffMs/60000));
+      let rel;
+      if(diffMin<1)rel='刚刚';
+      else if(diffMin<60)rel=`${diffMin} 分钟前`;
+      else if(diffMin<1440)rel=`${Math.floor(diffMin/60)} 小时 ${diffMin%60} 分钟前`;
+      else rel=`${Math.floor(diffMin/1440)} 天前`;
+      const prevStr=new Date(prevMsg.t).toLocaleString('zh-CN',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      envLines.push(`上一条消息时间：${prevStr}（距今约${rel}）`);
+    }
+  }
+  const manualCtx=buildManualDeviceContext();
+  if(manualCtx)envLines.push(manualCtx);
+  if(envLines.length>1)return envLines.join('\n');
+  return '';
+}
 </script>
 </body>
 </html>
+
+// 仅返回动态内容（时间信息），不影响缓存前缀
+}
